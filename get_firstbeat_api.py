@@ -5,9 +5,6 @@ import requests
 from dotenv import load_dotenv
 import os
 
-# Add CONSUMER_ID and SHARED_SECRET below.
-
-
 
 BASE_URL = "https://api.firstbeat.com/v1"
 API_KEY = ''
@@ -22,7 +19,7 @@ API_KEY = ''
 load_dotenv()
 CONSUMER_ID: str = os.getenv("SHARED_SECRET")
 SHARED_SECRET: str = os.getenv("ID")
-    
+
 def generate_jwt_token(shared_secret: str, consumer_id: str) -> str:    
     """  
     JWT token is valid for five minutes so it's valid approach to generate a new token for each API query.
