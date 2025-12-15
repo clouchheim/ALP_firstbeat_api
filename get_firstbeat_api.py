@@ -17,8 +17,8 @@ API_KEY = ''
 # this would expose the information get the API key
 
 load_dotenv()
-CONSUMER_ID: str = os.getenv("SHARED_SECRET")
-SHARED_SECRET: str = os.getenv("ID")
+CONSUMER_ID: str = os.getenv("ID")
+SHARED_SECRET: str = os.getenv("SHARED_SECRET")
 
 def generate_jwt_token(shared_secret: str, consumer_id: str) -> str:    
     """  
@@ -122,7 +122,7 @@ def main():
     print(f'apikey: {API_KEY}')
 
     accounts = get_accounts()
-    # print(accounts)
+    print(accounts)
     print(json.dumps(accounts.json(), indent=2))
 
 if __name__ == "__main__":
