@@ -3,11 +3,11 @@ import time
 import jwt
 import requests
 from dotenv import load_dotenv
+from datetime import datetime, timedelta, timezone
 
 # =========================
 # ENV + AUTH SETUP
 # =========================
-
 load_dotenv()
 
 BASE_URL = "https://api.firstbeat.com/v1"
@@ -21,23 +21,11 @@ if not CONSUMER_ID or not SHARED_SECRET or not API_KEY:
 
 def generate_jwt():
     now = int(time.time())
-    payload = {
-        "iss": CONSUMER_ID,
-        "iat": now,
-        "exp": now + 300
-    }
-
+    payload = {"iss": CONSUMER_ID, "iat": now, "exp": now + 300}
     token = jwt.encode(payload, SHARED_SECRET, algorithm="HS256")
-
-    # 🔑 CRITICAL: normalize to str
     if isinstance(token, bytes):
         token = token.decode("utf-8")
-
     return token
-
-token = generate_jwt()
-print("JWT:", token)
-print("JWT dots:", token.count("."))
 
 def auth_headers():
     return {
@@ -46,142 +34,105 @@ def auth_headers():
         "Accept": "application/json"
     }
 
+def last_x_days_utc_range(days_back):
+    today_utc = datetime.now(timezone.utc).date()
+    past_utc = today_utc - timedelta(days=days_back)
 
+    to_time = datetime.combine(today_utc, datetime.min.time(), tzinfo=timezone.utc)
+    from_time   = datetime.combine(past_utc, datetime.max.time(), tzinfo=timezone.utc)
 
+    return (
+        from_time.isoformat().replace("+00:00", "Z"),
+        to_time.isoformat().replace("+00:00", "Z")
+    )
 
 # =========================
 # HELPER FOR SAFE REQUESTS
 # =========================
-
-def test_endpoint(name, url, params=None):
+def test_endpoint(name, url, params=None, max_retries=5):
     print(f"\n--- {name} ---")
-
     headers = auth_headers()
+    #print("Authorization header (first 60):", headers["Authorization"][:60])
+    #print("x-api-key (first 8):", headers["x-api-key"][:8])
 
-    # DEBUG — leave this in for now
-    print("Authorization header (first 60):", headers["Authorization"][:60])
-    print("x-api-key (first 8):", headers["x-api-key"][:8])
+    for attempt in range(max_retries):
+        r = requests.get(url, headers=headers, params=params)
+        print(f"Status: {r.status_code}")
+        if r.status_code == 202:
+            print("Analysis in progress, retrying in 5s...")
+            time.sleep(5)
+            continue
+        break
 
-    r = requests.get(
-        url,
-        headers=headers,
-        params=params
-    )
-
-    print("Status:", r.status_code)
     print("Response (first 500 chars):")
     print(r.text[:500])
-
     return r
-
 
 # =========================
 # STEP 1 — ACCOUNTS
 # =========================
-
-accounts_resp = test_endpoint(
-    "Accounts",
-    f"{BASE_URL}/sports/accounts"
-)
-
-
-if not accounts_resp or accounts_resp.status_code != 200:
+accounts_resp = test_endpoint("Accounts", f"{BASE_URL}/sports/accounts")
+if accounts_resp.status_code != 200:
     print("\n❌ Cannot access accounts — stop here.")
     exit()
-
 accounts = accounts_resp.json().get("accounts", [])
 if not accounts:
     print("\n⚠️ No accounts returned.")
     exit()
-
-account_id = accounts[1]["accountId"]
-print("\nUsing accountId:", account_id)
-
+account_id = accounts[1]["accountId"] # 0 is APITEST and 1 is USSS
+name = accounts[1]["name"]
+print("Using accountId:", account_id, 'from:', name)
 
 # =========================
-# STEP 2 — ATHLETES
+# STEP 2 — TEAMS
 # =========================
+teams_resp = test_endpoint(
+    "Teams",
+    f"{BASE_URL}/sports/accounts/{account_id}/teams"
+)
+if teams_resp.status_code != 200:
+    print("\n Cannot access teams — stop here.")
+    exit()
+teams = teams_resp.json().get("teams", [])
+if not teams:
+    print("\n⚠️ No teams returned.")
+    exit()
+team_id = teams[0]["teamId"]
+print("Using teamId:", team_id)
 
-test_endpoint(
+# =========================
+# STEP 3 — ATHLETES
+# =========================
+athletes_resp = test_endpoint(
     "Athletes",
-    f"{BASE_URL}/sports/athletes",
-    params={"accountId": account_id}
+    f"{BASE_URL}/sports/accounts/{account_id}/teams/{21426}/athletes"
 )
-
+athletes = athletes_resp.json().get("athletes", [])
+print(f"Found {len(athletes)} athletes")
 
 # =========================
-# STEP 3 — SESSIONS (NO FILTERS)
+# STEP 4 — SESSIONS (OPTIONAL DATE FILTER)
 # =========================
-
-test_endpoint(
-    "Sessions (no filters)",
-    f"{BASE_URL}/sports/sessions",
-    params={"accountId": account_id}
+from_time, to_time = last_x_days_utc_range(365)
+print(team_id)
+print(from_time, to_time)
+sessions_resp = test_endpoint(
+    "Sessions (all)",
+    f"{BASE_URL}/sports/accounts/{account_id}/teams/{team_id}/sessions", #TODO: using a test ID here so change it when needed
+    params={"fromTime": from_time, "toTime": to_time}
 )
-
-
-# =========================
-# STEP 4 — SESSIONS (DATE FILTERED)
-# =========================
-
-test_endpoint(
-    "Sessions (dated)",
-    f"{BASE_URL}/sports/sessions",
-    params={
-        "accountId": account_id,
-        "fromTime": "2025-01-01T00:00:00Z",
-        "toTime":   "2025-12-31T23:59:59Z"
-    }
-)
-
+sessions = sessions_resp.json().get("sessions", [])
+print(f"Found {len(sessions)} sessions")
 
 # =========================
-# STEP 5 — MEASUREMENTS (NO VARS)
+# STEP 5 — SESSION RESULTS
 # =========================
-
-test_endpoint(
-    "Measurements (no vars)",
-    f"{BASE_URL}/sports/measurements",
-    params={"accountId": account_id}
-)
-
-
-# =========================
-# STEP 6 — RESULTS (NO VARS)
-# =========================
-
-test_endpoint(
-    "Results (no vars)",
-    f"{BASE_URL}/sports/results",
-    params={"accountId": account_id}
-)
-
-
-# =========================
-# STEP 7 — RESULTS (SAFE VAR)
-# =========================
-
-test_endpoint(
-    "Results (trainingLoad)",
-    f"{BASE_URL}/sports/results",
-    params={
-        "accountId": account_id,
-        "var": "trainingLoad"
-    }
-)
-
-
-# =========================
-# STEP 8 — RESULTS (RMSSD)
-# =========================
-
-test_endpoint(
-    "Results (rmssd)",
-    f"{BASE_URL}/sports/results",
-    params={
-        "accountId": account_id,
-        "var": "rmssd"
-    }
-)
+for session in sessions:
+    session_id = session["sessionId"]
+    test_endpoint(
+        f"Session Results for {session_id}",
+        f"{BASE_URL}/sports/accounts/{account_id}/teams/{team_id}/sessions/{session_id}/results",
+        params={"var": "acwr"} 
+    )
 
 print("\n=== DONE ===")
