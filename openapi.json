@@ -1,0 +1,2354 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Firstbeat Cloud API",
+    "version": "1.0.0",
+    "x-logo": {
+      "url": "https://assets.firstbeat.com/firstbeat/uploads/2019/04/firstbeat_logo_2013_compact.png"
+    },
+    "description": "# Overview\n\nThis page contains documentation on how to access First Sports data via API.\n\n## First Steps\n\n### Is API the right choice for me?\n\n> If you are unsure what the Sports API can do and how it works please contact <sports-cloud-api@firstbeat.com>. There are use cases that the API does not support and it is better to check your requirements with us.\n\nSports API is available for Sports Premium and Premium+ customers.\n\nAn alternative method for getting data out from Firstbeat Sports is the Data Export functionality in the Sports Cloud (premium feature).\n\nPossible limitations to be aware of:\n\n- Some automated tools might not work out of the box with the encoded and compressed query result data or are they are not able to generate the needed API tokens on the fly.\n- The concepts used in your software might be different (measurement, session, etc.) and mapping of the query results might not be straightforward.\n- All metrics in the Firstbeat Sports are not available via API. Please refer to this documentation for the list of available metrics.\n- All metric names in the Sports API and Cloud Data export are not the same. Differences are listed in this document.\n\n## Getting Support\n\nIn case you have any questions about the Sports API please contact <sports-cloud-api@firstbeat.com>.\nFor general Firstbeat Sports questions, please contact <support@firstbeat.com>.\n\nWe are happy to help you with any questions you might have.\n\n## Trying and Testing the Sports API\n\nIt is possible to try the Sports API with a test account. After registering as an API user, you will also get access to a test account that you can use for development and testing purposes.\n\nTest Account is a sandbox meant only for testing purposes.\n\n# API Versioning and Change Policy\n\n## Supported API versions\n\nThe Firstbeat Sports Cloud API uses URL versioning, where the API version is included in the base URL.\n\n```url\nhttps://api.firstbeat.com/v1/\n```\n\nOne API version is officially supported at a time unless otherwise communicated. This means that bug fixes are made to the latest version while old versions might still be available for some time.\n\n## Breaking changes\n\nThe following are breaking changes and will not change in the same API version:\n\n- Removing or renaming an endpoint\n- Removing or renaming a parameter\n- Adding new required parameters\n- Changing data format types\n- Making a previously required response field optional\n\n## Non-breaking changes\n\nThe following changes can be made on the same version:\n\n- Adding an operation/endpoint\n- Adding an optional parameter\n- Adding a parameter that changes the response to new format. For example: `results?responseformat=v2`\n- Adding an optional request header\n- Adding a response field\n- Adding a response header\n- Adding or removing result variables, either scalars or time series\n\n# Getting Started\n\n## Registering as a new API Consumer\n\nTo get started, you need to register as a Sports API consumer. First, you need to select your API consumerName and then make an API request to `account/register` endpoint to create `id` and `sharedSecret`.\n\nYour API `consumerName` can be at most 100 character long and must uniquely identify your team or organization so that it is not likely to be mistaken for some other entity. Your API `consumerName` will be visible in the Sports Cloud.\n\nBase URI of the API is:\n\n```url\nhttps://api.firstbeat.com/v1/\n```\n\nExample:\n\n```bash\ncurl 'https://api.firstbeat.com/v1/account/register' \\\n    --data '{\"consumerName\": \"your_api_consumer_name\"}' \n```\n\nOn Windows command prompt you need a workaround for the single quotes:\n\n```text\ncurl -d \"{\"consumerName\": \"your_api_consumer_name\"}\" https://api.firstbeat.com/v1/account/register \n```\n\nAfter a successful API call you should get a response similar to:\n\n```text\n{ \"id\": \"87a05c83-d5b7-46ba-aa4a-32f56cd284d5\", \"consumerName\":\"your_api_consumer_name\", \"sharedSecret\":\"8d5b6d12-61c5-4303-9ae3-c1837a15034b\" }`\n```\n\n- The generated `id` field is the primary field used for identifying you as an API user.\n\n- `sharedSecret` is used later for generating a token to access the API.\n\n**Please store your `sharedSecret` securely. You don't need to send the `sharedSecret` to Firstbeat Support.**\n\nAfter you have created your API consumer, please send the\n- 1) `consumerName`,\n- 2) `id` and\n- 3) name(s) of the Firstbeat Sports customer account(s) you need access to\n\nto <sports-cloud-api@firstbeat.com>. Please contact us using an email address that you have previously used to communicate with Firstbeat Sales or Customer Success Managers and include them as recipient in CC field of the email, if applicable.\n\nAfter you have received an e-mail that your `id` has been approved by the Sports API staff you are ready to proceed to the next step.\n\n## Approve API Consumer Access to Your Account Data\n\nNext, you need to grant the API consumer access to your Sports account data. This is done at Sports Cloud (<https://sports.firstbeat.com>).\n\n> If you don’t have access to Sports Cloud, please ask a person who owns the account to complete the steps below.\n\nIn Sports Cloud, do the following:\n\n1. Click the settings menu on the top left corner of the screen. Go to the Cloud API section of the screen.\n\n2. Read and accept the license agreement.\n\n3. Select the API consumer from the list to grant access to account data (select the account checkbox).\n\n4. Finally, save settings.\n\nAfter the access has been approved, you can proceed to create JWT Tokens and adding an API Key.\n\n## Creating a JWT Token\n\nThe API token is needed for creating an API key and for making request to the Sports API.\n\n> Every Firstbeat Cloud API endpoint (except `/register`) will require authentication in the form of JWT Token (JSON Web Token) in the Authorization header.\n\nThe format for passing the token in headers is as follows:\n\n```text\nAuthorization Bearer xxxxxxxxxxxxxxxx.yyyyyyyyyyyyy.zzzzzzzzzzzzzzz\n```\n\nJWT Token is a standardized way of generating a token. Currently, Firstbeat Cloud API supports HMACSHA256 encoded JWT tokens, with a shared secret. The token must be valid for at the most five minutes after generation.\n\nJWT Token format consists of three parts separated by a . (dot). The first part is the Base64 encoded header information, the second part is Base64 encoded Payload data and the last part is HMAC – encoded combination of HMACSHA256 encoding the headers, payload, and a shared secret text string.\n\nFor more information about JWT Tokens, check <https://jwt.io/>\n\nYou need your `id` and `sharedSecret` to create an API token.\n\nExamples of how to create a JWT token are provided in the next chapter.\n\nAs a result, you should have a token generated. A token looks like this (your token will be unique).\n\n```text\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjMzhlMjU2ZC0xMWVlLTRmNWQtYWI0NS1iNjJkMDU3NGE3ZmQiLCJpYXQiOjE1ODg2NzQxNzYsImV4cCI6MTU4ODY3NDQ3Nn0.BQpPdmyM4KikNFIRisKdOkFRCADCA1bQpKUzBUWy3QA\n```\n\n**Note:** Token is valid only until the expiration you set for it, which can be at most five minutes from issuance. You can create a new token even for each time you invoke the API.\n\n### Exaples for Generating a JWT Token\n\nHere are some examples with commonly used programming languages on how to generate a JWT Token with the help of some open source JWT libraries:\n\n### Java\n\nCreate a JWT token with Java (java-jwt):\n\n```java\nimport java.util.Date;\nimport com.auth0.jwt.JWT;\nimport com.auth0.jwt.algorithms.Algorithm;\n\ntry {\nAlgorithm algorithm = Algorithm.HMAC256(\"YOUR_SHARED_SECRET\");\nDate now = new Date();\nDate expires = new Date();\nexpires.setSeconds(expires.getSeconds() + 300);\n\nString token = JWT.create()\n    .withIssuer(\"YOUR_CONSUMER_ID\")\n    .withIssuedAt(now)\n    .withExpiresAt(expires)\n    .sign(algorithm);\n} catch (UnsupportedEncodingException exception){\n//UTF-8 encoding not supported\n} catch (JWTCreationException exception){\n//Invalid Signing configuration / Couldn't convert Claims.\n}\n```\n\n### Node.js / JavaScript\n\nCreate a JWT token with Node.js (jsonwebtoken):\n\n```javascript\n'use strict';\n\nconst jwt = require('jsonwebtoken');\nconst SECRET = 'YOUR_SHARED_SECRET';\nconst issuedAt = Date.now() / 1000;\nconst payload = {\niss: 'YOUR_CONSUMER_ID',\niat: issuedAt,\nexp: issuedAt + 300\n};\n\n// default algorithm (HMAC SHA256)\n\nconst token = jwt.sign(payload, SECRET);\n```\n\n### Python\n\nCreate a JWT token with Python (pyJwt):\n\n```python\nimport jwt #pyjwt\nimport time\n\nsecret = 'YOUR_SHARED_SECRET'\nnow = int(time.time())\nexpires = now + 300\n\npayload = {\n    'iss': 'YOUR_CONSUMER_ID',\n    'iat': now,\n    'exp': expires\n}\n\ntoken = jwt.encode(payload, secret)\n```\n\n### R script\n\nCreate a JWT token with R script (jose):\n\n```r\nlibrary(openssl)\nlibrary(jose)\n\nid <- \"YOUR_CONSUMER_ID\"\nsharedSecret <- \"YOUR_SHARED_SECRET\"\n\nnow <- as.numeric(Sys.time())\nafter_five_minutes <- now + 300\n\nclaim <- jwt_claim(iss = id, iat = now, exp = after_five_minutes)\nsecret <- charToRaw(sharedSecret)\n\ntoken <- jwt_encode_hmac(claim, secret)\n```\n\n## Adding an API Key\n\nNext, create your API key using the `account/api-key` endpoint.\n\nFor this step, you need a valid API token you generated earlier. Please remember the five minute expiration period for the token. Generate a new token in case more than five minutes have passed.\n\nYou create an API key only once.\n\nExample curl command:\n\n```bash\ncurl 'https://api.firstbeat.com/v1/account/api-key' \\\n    --request GET \\\n    --header 'Authorization: Bearer\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjMzhlMjU2ZC0xMWVlLTRmNWQtYWI0NS1iNjJkMDU3NGE3ZmQiLCJpYXQiOjE1ODg2NzQxNzYsImV4cCI6MTU4ODY3NDQ3Nn0.BQpPdmyM4KikNFIRisKdOkFRCADCA1bQpKUzBUWy3QB'\n```\n\nFor this command, you make a GET request with a header “Bearer token” string.\n\nIf the request is successful, you get an API key as a response:\n\n```text\n{\"apikey\":\"cXvpCBUzG64orvHXA5taA2Et2hWGr6Gh1LqL90hx\"}\n```\n\nYour API key doesn't change if you call the api-key end point again.\n\n## Testing your API Access\n\nAt this point:\n\n1. You have registered as a Sports API user and your account has been approved by Firstbeat\n2. You have granted your API consumer access to your Sports account data in the Sports Cloud\n3. You have generated an API token to add an API key\n\nNow you can access the Sports Cloud API.\n\nEach API request needs to include an API key and a valid token in the header.\n\nExample curl command to list accounts linked for your API consumer:\n\n```bash\ncurl 'https://api.firstbeat.com/v1/sports/accounts' \\\n    --request GET \\\n    --header 'Authorization: Bearer\neyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJjMzhlMjU2ZC0xMWVlLTRmNWQtYWI0NS1iNjJkMDU3NGE3ZmQiLCJpYXQiOjE1ODg2NzQxNzYsImV4cCI6MTU4ODY3NDQ3Nn0.BQpPdmyM4KikNFIRisKdOkFRCADCA1bQpKUzBUWy3QA' \\\n    --header 'x-api-key: cXvpCBUzG64orvHXA5taA2Et2hWGr6Gh1LqL90hx'\n```\n\nSuccessful operation returns:\n\n```json\n{\n    \"accounts\": [\n    {\n        \"accountId\": \"1-1\",\n        \"name\": \"Some account\",\n        \"authorizedBy\": {\n        \"coachId\": 0\n        }\n    }\n    ]\n}\n```\n\n## Changing the shared secret\n\nYou can swap the shared secret to a new value. You might do this if there is a chance that the value has leaked or as a regular process according to your policy. Start by invoking `GET /account/new-secret` using a JWT token generated using your current secret value. This will return a new value that is not yet valid for use. Generate a token using the new secret and invoke `POST /account/new-secret/confirm` with it. This will invalidate the previous secret value and replace it with the new value.\n\nPlease store the secret securely, never share it, and make sure you have the new secret stored before confirming it. If you lose access to the shared secret, Firstbeat API Support will advise making a new registration.\n\n# API Usage Limits\n\nEach API consumer will have usage limits of how frequently it is allowed for the consumer to request Firstbeat Cloud API resources.\n\n**Currently, API consumer-specific limits are as follows:**\n\n- Max. 60 requests / minute\n- Max. 5000 requests / day\n\n# Result pagination\n\nSome endpoints are limited to **1000** results per request. To fetch more results, the API provides an attribute `“more”` with the results.\n\nIf `“more: true”` attribute appears in the returned JSON data, you may request the next page by providing query parameter `?offset=OFFSET_NUMBER` to the request. `OFFSET_NUMBER` is the amount of already fetched records, for example 1000.\n\n# Returned Time Fields\n\nAll returned time fields follow [RFC3339 specification](http://xml2rfc.ietf.org/public/rfc/html/rfc3339.html#anchor14). Data is always returned in UTC time.\n\n# Filtering Measurement Results\n\nMeasurements can be filtered by time, exercise type aka title, measurement type, sports or event type. Different filters can be combined in order to have better results.\n\n| Parameter (example)                                                 | Description                                                         |\n| ------------------------------------------------------------------- | ------------------------------------------------------------------- |\n| fromTime:2017-02-01T12:00:00Z (year-month-dayThour:minute:secondZ)  | Return all measurements that begin earliest at the specified time   |\n| toTime:2017-02-02T23:30:00Z (year-month-dayThour:minute:secondZ)    | Return all measurements that begin before the specified time        |\n| exerciseType                                                        | Return all measurements which have given title                      |\n| measurementType                                                     | Return all measurements of specific type                            |\n| sportsType                                                          | Return all measurements for one or more specific sports displines   |\n| eventType                                                           | Return all measurements from one ore more specific types of events  |\n\n**Measurement type** is a fundamental categorization that determines how Firstbeat Sports handles a particular measurement. Possible values are as follows.\n\n| value              | Description                                                                   |\n| ------------------ | ----------------------------------------------------------------------------- |\n| exercise           | Regular measurement from training, game, fitness test, etc                    |\n| quickRecoveryTest  | Short measurement used for estimating athlete's recovery level                |\n| night              | Long, possibly multi-day measurement for studying stress and recovery         |\n| manual             | Manual record that contains no data from a device                             |\n\n\n# Filtering Session Results\n\nSessions can be filtered by time or type. Different filters can be combined in order to have better results.\n\n| Parameter (example)                                                 | Description                                                     |\n| ------------------------------------------------------------------- | --------------------------------------------------------------- |\n| fromTime:2017-02-01T12:00:00Z (year-month-dayThour:minute:secondZ)  | Return all sessions that begin earliest at the specified time   |\n| toTime:2017-02-02T23:30:00Z (year-month-dayThour:minute:secondZ)    | Return all sessions that begin before the specified time        |\n| type:sessionType                                                    | Return all sessions which have given type                       |\n| sportsType                                                          | Return all sessions for one or more specific sports displines   |\n| eventType                                                           | Return all sessions from one or more specific types of events   |\n\n# Failed analyses\n\nIt is possible for the analysis of a measurement or a lap to fail. This can happen because of errors in the measurement data or for other unspecified reasons. If the analysis has failed, a call for the results of a measurement or a measurement lap will respond with **204 No Content**. For a session or a session lap, if there are no successfully analysed measurements, a call for results will respond with **204 No Content**. Otherwise, the response will include results for all successfully analysed measurements.\n\n# Sports Type and Event Type\n\nMeasurements and sessions can be categorized based on sports discipline and type of event. Possible values for these fields can be retrieved from endpoints `https://api.firstbeat.com/v1/sports/sports-types` and `https://api.firstbeat.com/v1/sports/event-types` respectively. They are also listed below.\n\n**Sports type** indicates the sports discipline practised during the measurement. Possible values are\n- football\n- americanFootball\n- rugbySevens\n- rugbyUnion\n- rugbyLeague\n- fieldHockey\n- iceHockey\n- ringette\n- baseball\n- basketball\n- futsal\n- volleyball\n- beachVolleyball\n- floorball\n- handball\n- lacrosse\n- softball\n- gaelicFootball\n- australianFootball\n- cricket\n- tennis\n- badminton\n- squash\n- ultimate\n- trailRunning\n- running\n- treadmillRunning\n- orienteering\n- strength\n- cardio\n- xcSkiing\n- biathlon\n- roadCycling\n- indoorCycling\n- mountainBiking\n- bmx\n- alpineSkiing\n- swimming\n- walking\n- nordicWalking\n- snowboarding\n- rowing\n- mountaineering\n- hiking\n- multisport\n- triathlon\n- golf\n- inlineSkating\n- climbing\n- iceSkating\n- taekwondo\n\n**Event type** indicates what kind of event the measurement is from. Possible values are\n- race\n- game\n- rehab\n- recovery\n- training\n\n# Result variables\n\nYou can find full list of available result variables below. There are two types of variables:\n\n1. Scalars: Single values calculated from the measurement. For example, `64`.\n2. Time series: Values from each respective moment of the measurement period. For example `[115,115,117,124,...]`.\n\n## Decoding Time Series\n\nTime series are Base64 encoded and zlib compressed.\n\nHere is a code example how to work with time series data in JavaScript.\n\n```javascript\nimport pako from 'pako';\nimport atob from 'atob';\nconst decompress = series => {\n  const bytes = pako.inflate(\n    new Uint8Array(\n      atob(series.data)\n        .split('')\n        .map(x => x.charCodeAt(0))\n    )\n  );\n  const buffer = new ArrayBuffer(bytes.length);\n  const view = new DataView(buffer);\n  bytes.forEach((b, i) => view.setUint8(i, b));\n  const readValueFromByteArray = {\n    Float: {\n      64: (dataView, index) => dataView.getFloat64(index * 8),\n      32: (dataView, index) => dataView.getFloat32(index * 4)\n    },\n    Unsigned: {\n      16: (dataView, index) => dataView.getUint16(index * 2),\n      8: (dataView, index) => dataView.getUint8(index)\n    },\n    Signed: {\n      16: (dataView, index) => dataView.getInt16(index * 2)\n    }\n  };\n  const result = [];\n  for (let i = 0; i < bytes.length / (series.bits / 8); i++) {\n    result[i] = readValueFromByteArray[series.type][series.bits](view, i);\n  }\n  return result;\n};\n```\n\nYou may also use the query parameter `format=list` to get the data in an uncompressed format. The binary format is default and recommended because the API is only able to return a response at largest 6 MB. With long measurements and large number series, it is possible to exceed that. If you receive status code 413 or 504 while querying analysis results, switch to `format=binary` or reduce the set of series requested in a single query.\n\nFor example: `...results?var=rmssd1MinSeries,vlfSeries,lfSeries,hfSeries&format=list`\n\n### Handling large sets of data\n\nA long session with many players can have a large amount of result data. This may lead to the API endpoint being unable to handle it all in a single query, in which case you will receive HTTP response 413 Response Too Large or 504 Gateway Timeout.\n\nThe solution is to first look at how you may divide the task into several queries by retrieving specific time series variables in each. You may also use query parameter `format=binary` instead of `format=list` or set the `Accept-Encoding` header in the request, in which case the entire response body is compressed. Supported values are `Accept-Encoding: zstd,br,gzip,deflate`.\n\n\n## Scalar variables\n\nLast column of the table below shows the corresponding variable name in Sports Cloud data export (excel export). Note the differences in some variable names, for example training zone times.\n\n**Note:** Names of the heart rate zone variables are different than in the rest of the system!\n\n| API variable name                  | Unit      | Description | Data Export variable name |\n|------------------------------------|-----------|-------------|---------------------------|\n| heartRateAverage                   | 1/min     | The average heart rate value for the measurement. | Average HR (bpm) |\n| heartRatePeak                      | 1/min     | The highest heart rate value achieved during the measurement. | Peak HR (bpm) |\n| heartRateLowest                    | 1/min     | The lowest heart rate value achieved during the measurement. | Minimum Heart rate` |\n| heartRateAveragePercentage         | %         | Average %HRmax from the recorded measurement. Calculated based on the maximum heart rate value set to the profile. | Average %HRmax (%) |\n| heartRatePeakPercentage            | %         | Peak value of %HRmax. Calculated based on the set maximum heart rate. | Peak HR (bpm) |\n| heartRateMinimumPercentage         | %         | Minimum value of %HRmax. Calculated based on the set maximum heart rate value. | Minimum HR (bpm) |\n| zone1Time                          | min       | The overall time spent in heart rate zone1 during the measurement. The exercise intensities are categorized into different zones based on the percentage of personal maximal heart rate (%Hrmax). | High intensity training (hh:mm:ss) |\n| zone2Time                          | min       | The overall time spent in heart rate zone2 during the measurement.  | Anaerobic threshold zone (hh:mm:ss) |\n| zone3Time                          | min       | The overall time spent in heart rate zone3 during the measurement.  | Aerobic zone 2 (hh:mm:ss) |\n| zone4Time                          | min       | The overall time spent in heart rate zone4 during the measurement.  | Aerobic zone 1 (hh:mm:ss) |\n| zone5Time                          | min       | The overall time spent in heart rate zone5 during the measurement.  | Recovery training (hh:mm:ss) |\n| underZonesTime                     | min       | The overall time spent below the set heart rate zones during the measurement. | Time Under Zones (hh:mm:ss) |\n| trimp                              | index     | Training Impulse value. A cumulative variable illustrating training load | TRIMP (Index) |\n| trimpPerMinute                     | 1/min     | Average TRIMP accumulation per minute in the recorded measurement. | TRIMP/min (Index) |\n| epocPeak                           | ml/kg     | The highest EPOC (Excess Post-Exercise Oxygen Consumption) value achieved during the measurement. | EPOC Peak (ml/kg) |\n| epocFinal                          | ml/kg     | The last value of EPOC (Excess Post-Exercise Oxygen Consumption) at the end of the measurement.  | EPOC (ml/kg) |\n| vo2max                             | ml/kg/min | Maximal amount of oxygen in milliliters per kilogram the athlete can utilize over one minute during an intense, maximal effort. Calculated from the heart rate variability data. | VO2max (ml/kg/min) |\n| oxygenConsumptionAverage           | ml/kg/min | The average rate of oxygen consumption achieved during the measurement. | Average VO2 (ml/kg/min) |\n| oxygenConsumptionPeak              | ml/kg/min | The highest rate of oxygen consumption achieved (VO2max) during the measurement. Oxygen consumption is calculated in proportion to the person's weight. The higher the value, the higher the peak intensity of exercise. | Peak VO2 (ml/kg/min) |\n| oxygenConsumptionMaximumPercentage | %         | Peak value of %VO2max. Calculated based on the set VO2max value. | Peak %VO2max (%) |\n| oxygenConsumptionAveragePercentage | %         | Average %VO2max from the recorded measurement. | Average %VO2max (%) |\n| acuteTrainingLoad                  | index     | The TRIMP sum from the past 7 days. | Acute Training Load |\n| chronicTrainingLoad                | index     | The TRIMP sum from the past 28 days divided by 4. | Chronic Training Load |\n| acwr                               | (ratio)   | Acute and chronic working load ratio. | ACWR |\n| aerobicTrainingEffect              | 0.0 - 5.0 | The 0-5 score of the personalized impact of the training measurement on aerobic fitness development. A score 0-0.9 is defined as \"no effect\", 1.0-1.9 as \"minor effect\", 2.0-2.9 as \"maintaining effect\", 3.0-3.9 as \"improving effect\", 4.0-4.9 as \"highly improving effect\", and 5.0 as \"overreaching effect\". Not available for laps and sessions | Aerobic TE (0.0 - 5.0) |\n| anaerobicTrainingEffect            | 0.0 - 5.0 | Anaerobic Training Effect. See aerobicTrainingEffect for results scale. Not available for laps and sessions | Anaerobic TE (0.0 - 5.0) |\n| respirationRateAverage             | 1/min     | Average respiration rate in times per minute. Calculated from the heart rate variability data. | Average RespR (times/min) |\n| respirationRatePeak                | 1/min     | Peak value of respiration rate in times per minute | Peak RespR (times/min) |\n| energyConsumptionCarbs             | kcal      | Shows the carbohydrate energy expenditure in the recorded measurement in kcal. | EE Carbohydrates (kcal) |\n| energyConsumptionFats              | kcal      | Shows the fat energy expenditure in recorded measurement in kcal. | EE Fats (kcal) |\n| energyConsumptionTotal             | kcal      | The overall energy (kilocalorie) consumption during the measurement. | EE Total (kcal) |\n| movementLoad                       | index     | Total accumulated movement load.  | Movement load |\n| averageMovementIntensity           | index     | Average of the accumulation rate of movement load. | Average movement intensity. This is a Premium+ feature |\n| quickRecoveryTestScore             | index     | The 0-100% score of the personalized result of the Quick Recovery Test (QRT). Only available for quick recovery tests | Quick recovery test (Index) |\n| quickRecoveryScaledScore           | %         | Scaled quick recovery index calculated based on the athlete's minimum and maximum quick recovery test index value. Only available for quick recovery tests | Scaled Quick Recovery Test (%) |\n| scaledQrtWeeklyMean                | %         | Athlete's individual quick recovery test 7-day average. Only available for quick recovery tests | - |\n| playerStatusScore                  | 0-100     | Training status describes the balance of training for an individual athlete. Scale: well balanced: over 70, moderately balanced: 30-70, out of balance: below 30. This is a Premium+ feature | Training status |\n| rmssd                              | ms        | Root Mean Square of Successive Differences on the RR interval series, value that indicates quality of recovery. | RMSSD (ms) |\n| rmssdSleepAverage                  | ms        | Root Mean Square of Successive Differences on the RR interval series, during sleep. Only available for stress & recovery measurements | RMSSD Sleep (ms) |\n| rmssdNonSleepAverage               | ms        | Root Mean Square of Successive Differences on the RR interval series, during time spent awake. Only available for stress & recovery measurements | RMSSD Awake (ms) |\n| sdnn                               | ms        | Standard deviation of normal to normal RR intervals in milliseconds. | SDNN (ms) |\n| lfHfRatio                          | %         | Ratio between the high frequency and low frequency heart rate variability power during the recorded measurement. | LF/HF (%) |\n| lfAverage                          | ms^2      | Mean of the low frequency heart rate variability power during the recorded measurement. | LF Average (ms^2) |\n| hfAverage                          | ms^2      | Mean of the high frequency heart rate variability power during the recorded measurement. | HF Average (ms^2) |\n| vlfAverage                         | ms^2      | Mean of the very low frequency heart rate variability power during the recorded measurement. | VLF Average (ms^2) |\n| recoveryStateTime                  | min       | The overall time spent in recovery state during the measurement. Only available for stress & recovery measurements | Relaxation time (hh:mm:ss) |\n| stressStateTime                    | min       | The overall time spent in stress state during the measurement. Only available for stress & recovery measurements | Stress time (hh:mm:ss) |\n| sleepStateTime                     | min       | Athletes’s sleep duration in hours, minutes and seconds. Only available for stress & recovery measurements | Sleep duration (hh:mm:ss) |\n| sleepRecoveryIndexAbsolute         | index     | An index of the athlete's recovery during sleep from the 4-hour window starting 30 minutes after going to bed. Only available for stress & recovery measurements | Recovery Index (absolute) |\n| daysSinceLastGoodRecovery          | days      | Athletes's time since good recovery in days. Only available for quick recovery tests | Quick recovery test (Time since good recovery) (Days) |\n| measurementError                   | %         | Average percentage of RR intervals recognized as artifacts after the artifact correction has corrected the data. | Measurement error (%) |\n| perceivedRecovery                  | 1-5       | Perceived recovery value from athlete. Not available for laps and sessions | Perceived recovery |\n| firstbeatPointsStressBalance       | 0-100     | A score ranging from 0 to 100 that evaluates the balance between stress and recovery responses over a 24-hour cycle, including both day and sleep | 24h stress & recovery balance (%) |\n| ventilationAverage                 | liter/min | Average rate of air intake | Average VE (liter/min) |\n| ventilationPeak                    | liter/min | Highest rate of air intake | Peak VE (liter/min) |\n| heartRateRecoveryRelative30s       | %         | The largest drop in heart rate level over a 30 second window relative to athlete's personal maximum heart rate. This is a Premium+ feature | HR Recovery (30s, %) |\n| heartRateRecoveryRelative60s       | %         | The largest drop in heart rate level over a 60 second window relative to athlete's personal maximum heart rate. This is a Premium+ feature | HR Recovery (60s, %) |\n| heartRateRecoveryRelative120s      | %         | The largest drop in heart rate level over a 120 second window relative to athlete's personal maximum heart rate. This is a Premium+ feature | HR Recovery (120s, %) |\n| heartRateRecoveryAbsolute30s       | 1/min     | The largest drop in heart rate level over a 30 second window. This is a Premium+ feature | HR Recovery (30s, bpm) |\n| heartRateRecoveryAbsolute60s       | 1/min     | The largest drop in heart rate level over a 60 second window. This is a Premium+ feature | HR Recovery (60s, bpm) |\n| heartRateRecoveryAbsolute120s      | 1/min     | The largest drop in heart rate level over a 120 second window. This is a Premium+ feature | HR Recovery (120s, bpm) |\n| distance                           | m         | Not available for laps and sessions | Distance (m) |\n| speedAverage                       | km/h      | Not available for laps and sessions | Average Speed (km/h) |\n| pace                               | min/km    | Not available for laps and sessions | Pace (min/km) |\n| powerAverage                       | W         | Not available for laps and sessions | Power (W) |\n| cadenceAverage                     | 1/min     | Not available for laps and sessions | Cadence (rpm) |\n| ascent                             | m         | Not available for laps and sessions | Ascent (m) |\n| descent                            | m         | Not available for laps and sessions | Descent (m) |\n| movementEfficiency                 | m         | This is a Premium+ feature | Movement efficiency (Index) |\n| movementIntensityHighest5s         | kicks/min | The highest increase in movement load over a 5 second window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 5s |\n| movementIntensityHighest10s        | kicks/min | The highest increase in movement load over a 10 second window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 10s |\n| movementIntensityHighest15s        | kicks/min | The highest increase in movement load over a 15 second window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 15s |\n| movementIntensityHighest20s        | kicks/min | The highest increase in movement load over a 20 second window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 20s |\n| movementIntensityHighest30s        | kicks/min | The highest increase in movement load over a 30 second window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 30s |\n| movementIntensityHighest45s        | kicks/min | The highest increase in movement load over a 45 second window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 45s |\n| movementIntensityHighest1min       | kicks/min | The highest increase in movement load over a 1 minute window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 1min |\n| movementIntensityHighest2min       | kicks/min | The highest increase in movement load over a 2 minute window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 2min |\n| movementIntensityHighest3min       | kicks/min | The highest increase in movement load over a 3 minute window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 3min |\n| movementIntensityHighest4min       | kicks/min | The highest increase in movement load over a 4 minute window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 4min |\n| movementIntensityHighest5min       | kicks/min | The highest increase in movement load over a 5 minute window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 5min |\n| movementIntensityHighest10min      | kicks/min | The highest increase in movement load over a 10 minute window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 10min |\n| movementIntensityHighest15min      | kicks/min | The highest increase in movement load over a 15 minute window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 15min |\n| movementIntensityHighest20min      | kicks/min | The highest increase in movement load over a 20 minute window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 20min |\n| movementIntensityHighest30min      | kicks/min | The highest increase in movement load over a 30 minute window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 30min |\n| movementIntensityHighest45min      | kicks/min | The highest increase in movement load over a 45 minute window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 45min |\n| movementIntensityHighest1h         | kicks/min | The highest increase in movement load over a 1 hour window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 1h |\n| movementIntensityHighest2h         | kicks/min | The highest increase in movement load over a 2 hour window. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period MI 2h |\n| trimpPerMinHighest30s              | 1/min     | The highest increase in TRIMP (Training impulse) over a 30 second period. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period TRIMP/min 30s |\n| trimpPerMinHighest45s              | 1/min     | The highest increase in TRIMP (Training impulse) over a 45 second period. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period TRIMP/min 45s |\n| trimpPerMinHighest1min             | 1/min     | The highest increase in TRIMP (Training impulse) over a 1 minute period. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period TRIMP/min 1min |\n| trimpPerMinHighest2min             | 1/min     | The highest increase in TRIMP (Training impulse) over a 2 minute period. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period TRIMP/min 2min |\n| trimpPerMinHighest3min             | 1/min     | The highest increase in TRIMP (Training impulse) over a 3 minute period. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period TRIMP/min 3min |\n| trimpPerMinHighest4min             | 1/min     | The highest increase in TRIMP (Training impulse) over a 4 minute period. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period TRIMP/min 4min |\n| trimpPerMinHighest5min             | 1/min     | The highest increase in TRIMP (Training impulse) over a 5 minute period. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period TRIMP/min 5min |\n| trimpPerMinHighest10min            | 1/min     | The highest increase in TRIMP (Training impulse) over a 10 minute period. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period TRIMP/min 10min |\n| trimpPerMinHighest15min            | 1/min     | The highest increase in TRIMP (Training impulse) over a 15 minute period. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period TRIMP/min 15min |\n| trimpPerMinHighest20min            | 1/min     | The highest increase in TRIMP (Training impulse) over a 20 minute period. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period TRIMP/min 20min |\n| trimpPerMinHighest30min            | 1/min     | The highest increase in TRIMP (Training impulse) over a 30 minute period. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period TRIMP/min 30min |\n| trimpPerMinHighest45min            | 1/min     | The highest increase in TRIMP (Training impulse) over a 45 minute period. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period TRIMP/min 45min |\n| trimpPerMinHighest1h               | 1/min     | The highest increase in TRIMP (Training impulse) over a 1 hour period. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period TRIMP/min 1h |\n| trimpPerMinHighest2h               | 1/min     | The highest increase in TRIMP (Training impulse) over a 2 hour period. Only available for exercise measurements. This is a Premium+ feature | Maximal Intensity Period TRIMP/min 2h |\n\n\n## Time series\n\n| API variable name                                | Unit   | Sampling Rate (Hz) | Type     | Bits | Description |\n|--------------------------------------------------|--------|--------------------|----------|------|-------------|\n| rmssd1MinSeries <sup>1)</sup>                    | ms     |               0.02 | Float    |   64 | Time series data for Root Mean Square od Successive Differences (rmssd). Value to indicate quality of recovery. |\n| vlfSeries <sup>1)</sup>                          | ms^2   |                  1 | Float    |   64 | Time series data for the mean of the very low frequency heart rate variability during the recorded measurement. |\n| lfSeries <sup>1)</sup>                           | ms^2   |                  1 | Float    |   64 | Time series data for the mean of the low frequency heart rate variability during the recorded measurement. |\n| hfSeries <sup>1)</sup>                           | ms^2   |                  1 | Float    |   64 | Time series data for the mean of the high frequency heart rate variability during the recorded measurement.  |\n| artifactCorrectedRrVector <sup>1)</sup>          | ms     |                  - | Float    |   64 | Artifact corrected RR interval series which consists of values indicating time in milliseconds between consecutive R peaks. |\n| rriSeries <sup>1)</sup>                          | ms     |                  - | Unsigned |   16 | Uncorrected RR interval series which consists of values indicating time in milliseconds between consecutive R peaks. Not available for laps and sessions |\n| heartRateSeries                                  | 1/min  |                0.2 | Unsigned |    8 | The time series showing the momentary value of heart rate during the measurement. 5s sampling rate. |\n| heartRateSeries1s <sup>1)</sup>                  | 1/min  |                1   | Unsigned |    8 | The time series showing the momentary value of heart rate during the measurement. 1s sampling rate. |\n| heartRatePercentageSeries <sup>1)</sup>          | 1/min  |                0.2 | Float    |   64 | Heart rate percentage series. |\n| epocSeries                                       | ml/kg  |                0.2 | Float    |   64 | The time series showing the momentary value of EPOC during the measurement. |\n| energyConsumptionSeries                          | kcal/h |                0.2 | Unsigned |   16 | The time series showing the momentary value of energy (kilocalorie) consumption rate as kcal/h during the measurement. |\n| trimpSeries                                      |        |                0.2 | Float    |   64 | The time series showing the momentary value of TRIMP during the measurement. |\n| trimpPerMinuteSeries <sup>1)</sup>               | 1/min  |                0.2 | Float    |   64 | TRIMP time series. |\n| movementLoadAccumulationRate <sup>1)</sup>       | 1/min  |                0.2 | Float    |   64 | Time series for Movement Load Accumulation Rate. This is a Premium+ feature |\n| movementLoadSeries <sup>1)</sup>                 |        |                0.2 | Float    |   64 | Accumulated movement load. Not available for laps and sessions. This is a Premium+ feature |\n| energyConsumptionRelativeFatSeries <sup>1)</sup> | %      |                0.2 | Unsigned |    8 | The relative share of total energy expenditure that comes from fats |\n| artifactPercentageSeries <sup>1)</sup>           | %      |                0.2 | Unsigned |    8 | Percentage of rejected RR intervals within each 5 second period |\n\n\n**NOTE:** TimeSeries variables marked with an <sup>1)</sup> are not included by default in the response from `/results` endpoints due to their data-heavy nature. To request them, use the `?var=` query parameter.\n\nFor example: `.../results?var=trimpPerMinuteSeries,heartRatePercentageSeries`\n",
+    "contact": {
+      "email": "sports-cloud-api@firstbeat.com",
+      "name": "Firstbeat Sports Cloud API Support",
+      "url": "https://content.firstbeat.com/firstbeat-sports-api-data-management"
+    }
+  },
+  "paths": {
+    "/account/register": {
+      "post": {
+        "tags": [
+          "account"
+        ],
+        "summary": "Register as an API consumer",
+        "description": "Register as a new API consumer using a name that uniquely and unambiguously identifies you or your organization",
+        "requestBody": {
+          "description": "Created API Consumer object",
+          "content": {
+            "*/*": {
+              "schema": {
+                "$ref": "#/components/schemas/Register"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegisterResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid payload supplied"
+          }
+        }
+      }
+    },
+    "/account/api-key": {
+      "get": {
+        "tags": [
+          "account"
+        ],
+        "summary": "Request an API key",
+        "description": "Retrieve consumer specific API key needed to access other endpoints",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiKey"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          }
+        }
+      }
+    },
+    "/account/new-secret": {
+      "get": {
+        "tags": [
+          "account"
+        ],
+        "summary": "Get a new shared secret",
+        "description": "Retrieve a new shared secret that must be confirmed using /account/new-secret/confirm endpoint before it can be used for other purposes",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SharedSecret"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          }
+        }
+      }
+    },
+    "/account/new-secret/confirm": {
+      "post": {
+        "tags": [
+          "account"
+        ],
+        "summary": "Confirm new shared secret",
+        "description": "Confirm your possession of a new shared secret and invalidate the previous shared secret",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "Use the new shared secret to generate the token. Format: Bearer NEW_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation"
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          }
+        }
+      }
+    },
+    "/sports/accounts": {
+      "get": {
+        "tags": [
+          "sports"
+        ],
+        "summary": "Get accounts",
+        "description": "Get Firstbeat Sports accounts linked to your API consumer",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Accounts"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          }
+        }
+      }
+    },
+    "/sports/sports-types": {
+      "get": {
+        "tags": [
+          "sports"
+        ],
+        "summary": "Get possible values of sportsType",
+        "description": "Get possible values for field sportsType in measurements and sessions",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": [
+                    "football",
+                    "americanFootball",
+                    "rugbySevens",
+                    "rugbyUnion",
+                    "rugbyLeague",
+                    "fieldHockey",
+                    "iceHockey",
+                    "ringette",
+                    "baseball",
+                    "basketball",
+                    "futsal",
+                    "volleyball",
+                    "beachVolleyball",
+                    "floorball",
+                    "handball",
+                    "lacrosse",
+                    "softball",
+                    "gaelicFootball",
+                    "australianFootball",
+                    "cricket",
+                    "tennis",
+                    "badminton",
+                    "squash",
+                    "ultimate",
+                    "trailRunning",
+                    "running",
+                    "treadmillRunning",
+                    "orienteering",
+                    "strength",
+                    "cardio",
+                    "xcSkiing",
+                    "biathlon",
+                    "roadCycling",
+                    "indoorCycling",
+                    "mountainBiking",
+                    "bmx",
+                    "alpineSkiing",
+                    "swimming",
+                    "walking",
+                    "nordicWalking",
+                    "snowboarding",
+                    "rowing",
+                    "mountaineering",
+                    "hiking",
+                    "multisport",
+                    "triathlon",
+                    "golf",
+                    "inlineSkating",
+                    "climbing",
+                    "iceSkating",
+                    "taekwondo"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          }
+        }
+      }
+    },
+    "/sports/event-types": {
+      "get": {
+        "tags": [
+          "sports"
+        ],
+        "summary": "Get possible values of eventType",
+        "description": "Get possible values for field eventType in measurements and sessions",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  },
+                  "example": [
+                    "race",
+                    "game",
+                    "rehab",
+                    "recovery",
+                    "training"
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          }
+        }
+      }
+    },
+    "/sports/accounts/{accountId}/athletes": {
+      "get": {
+        "tags": [
+          "sports"
+        ],
+        "summary": "Get list of athletes",
+        "description": "Get athletes that belong to the specified account",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Id of the account",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Skip a number of first items in the response",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Athletes"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/sports/accounts/{accountId}/athletes/{athleteId}": {
+      "get": {
+        "tags": [
+          "sports"
+        ],
+        "summary": "Get athlete",
+        "description": "Get athlete",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Id of the account",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "athleteId",
+            "in": "path",
+            "description": "Id of the athlete",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Athlete"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/sports/accounts/{accountId}/athletes/{athleteId}/measurements": {
+      "get": {
+        "tags": [
+          "sports"
+        ],
+        "summary": "Get athlete measurements",
+        "description": "List all measurements of an athlete",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Id of the account",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "athleteId",
+            "in": "path",
+            "description": "Id of the athlete",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "fromTime",
+            "in": "query",
+            "description": "Limit the response to measurements that start earliest at specified time",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "toTime",
+            "in": "query",
+            "description": "Limit the response to measurements that start before specified time",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "exerciseType",
+            "in": "query",
+            "description": "Limit the response to measurements of specified exercise type, also known as title",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "measurementType",
+            "in": "query",
+            "description": "Limit the response to measurements of specified measurement type",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "exercise",
+                "quickRecoveryTest",
+                "night",
+                "manual"
+              ]
+            }
+          },
+          {
+            "name": "sportsType",
+            "in": "query",
+            "description": "Limit the response to measurements of specified sports. To make a single query for more than one sports, pass them as a comma-separated list. See Sports Type and Event Type for possible values.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "eventType",
+            "in": "query",
+            "description": "Limit the response to measurements from a specific type of event. To make a single query for more than one event type, pass them as a comma-separated list. See Sports Type and Event Type for possible values.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Skip a number of first items in the response",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "includeLaps",
+            "in": "query",
+            "description": "Include laps in the response",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Measurements"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/sports/accounts/{accountId}/athletes/{athleteId}/measurements/{measurementId}/results": {
+      "get": {
+        "tags": [
+          "sports"
+        ],
+        "summary": "Get athlete measurement results",
+        "description": "Get athlete measurement results",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Id of the account",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "athleteId",
+            "in": "path",
+            "description": "Id of the athlete",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "var",
+            "in": "query",
+            "description": "Specify names of requested variables in a comma-separated string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Request time series either as binary data or JSON lists of numbers",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "binary",
+                "list"
+              ]
+            }
+          },
+          {
+            "name": "measurementId",
+            "in": "path",
+            "description": "Id of the measurement",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AthleteMeasurementResults"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Accepted. Analysis job is in progress. You should wait 5 seconds and then run the same request again."
+          },
+          "204": {
+            "description": "No Content."
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "419": {
+            "description": "Response Too Large"
+          },
+          "504": {
+            "description": "Gateway Timeout"
+          }
+        }
+      }
+    },
+    "/sports/accounts/{accountId}/athletes/{athleteId}/measurements/{measurementId}/laps/{lapId}/results": {
+      "get": {
+        "tags": [
+          "sports"
+        ],
+        "summary": "Get athlete measurement lap results",
+        "description": "Get analysis results for lap in athlete's measurement",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Id of the account",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "athleteId",
+            "in": "path",
+            "description": "Id of the athlete",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "measurementId",
+            "in": "path",
+            "description": "Id of the measurement",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "lapId",
+            "in": "path",
+            "description": "Id of the lap",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "var",
+            "in": "query",
+            "description": "Specify names of requested variables in a comma-separated string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Request time series either as binary data or JSON lists of numbers",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "binary",
+                "list"
+              ]
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AthleteMeasurementLapResults"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Accepted. Analysis job is in progress. You should wait 5 seconds and then run the same request again."
+          },
+          "204": {
+            "description": "No Content."
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "419": {
+            "description": "Response Too Large"
+          },
+          "504": {
+            "description": "Gateway Timeout"
+          }
+        }
+      }
+    },
+    "/sports/accounts/{accountId}/coaches": {
+      "get": {
+        "tags": [
+          "sports"
+        ],
+        "summary": "Get coaches",
+        "description": "Get all coaches in an account",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Id of the account",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Skip a number of first items in the response",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Coaches"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/sports/accounts/{accountId}/coaches/{coachId}": {
+      "get": {
+        "tags": [
+          "sports"
+        ],
+        "summary": "Get coach",
+        "description": "Get coach info",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Id of the account",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "coachId",
+            "in": "path",
+            "description": "Id of the coach",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Coach"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/sports/accounts/{accountId}/teams": {
+      "get": {
+        "tags": [
+          "sports"
+        ],
+        "summary": "Get teams",
+        "description": "Get all teams and groups in an account",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Id of the account",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Skip a number of first items in the response",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Teams"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/sports/accounts/{accountId}/teams/{teamId}": {
+      "get": {
+        "tags": [
+          "sports"
+        ],
+        "summary": "Get team",
+        "description": "Get team and its groups",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Id of the account",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "teamId",
+            "in": "path",
+            "description": "Id of the team/group",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Team"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/sports/accounts/{accountId}/teams/{teamId}/athletes": {
+      "get": {
+        "tags": [
+          "sports"
+        ],
+        "summary": "Get team athletes",
+        "description": "Get all athletes in a team or group",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Id of the account",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "teamId",
+            "in": "path",
+            "description": "Id of the team or group",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Skip a number of first items in the response",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Athletes"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/sports/accounts/{accountId}/teams/{teamId}/sessions": {
+      "get": {
+        "tags": [
+          "sports"
+        ],
+        "summary": "Get team sessions",
+        "description": "Get all sessions of a team or group",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Id of the account",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "teamId",
+            "in": "path",
+            "description": "Id of the team or group",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Skip a number of first items in the response",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "fromTime",
+            "in": "query",
+            "description": "Limit the response to sessions that start earliest at specified time",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "toTime",
+            "in": "query",
+            "description": "Limit the response to sessions that start before specified time",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "description": "Limit the response to sessions of specified type, also known as title",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sportsType",
+            "in": "query",
+            "description": "Limit the response to measurements of specified sports. To make a single query for more than one sports, pass them as a comma-separated list. See Sports Type and Event Type for possible values.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "eventType",
+            "in": "query",
+            "description": "Limit the response to measurements from a specific type of event. To make a single query for more than one event type, pass them as a comma-separated list. See Sports Type and Event Type for possible values.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "includeLaps",
+            "in": "query",
+            "description": "Include laps in the response",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Sessions"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/sports/accounts/{accountId}/teams/{teamId}/sessions/{sessionId}/results": {
+      "get": {
+        "tags": [
+          "sports"
+        ],
+        "summary": "Get session results",
+        "description": "Get session results",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Id of the account",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "teamId",
+            "in": "path",
+            "description": "Id of the team/group",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "sessionId",
+            "in": "path",
+            "description": "Id of the session",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "var",
+            "in": "query",
+            "description": "Specify names of requested variables in a comma-separated string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Request time series either as binary data or JSON lists of numbers",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "binary",
+                "list"
+              ]
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionResults"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Accepted. Analysis job is in progress. You should wait 5 seconds and then run the same request again."
+          },
+          "204": {
+            "description": "No Content."
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "419": {
+            "description": "Response Too Large"
+          },
+          "504": {
+            "description": "Gateway Timeout"
+          }
+        }
+      }
+    },
+    "/sports/accounts/{accountId}/teams/{teamId}/sessions/{sessionId}/laps/{lapId}/results": {
+      "get": {
+        "tags": [
+          "sports"
+        ],
+        "summary": "Get session lap results",
+        "description": "Get session lap results",
+        "parameters": [
+          {
+            "name": "accountId",
+            "in": "path",
+            "description": "Id of the account",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "teamId",
+            "in": "path",
+            "description": "Id of the team/group",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "sessionId",
+            "in": "path",
+            "description": "Id of the session",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "lapId",
+            "in": "path",
+            "description": "Id of the lap",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "var",
+            "in": "query",
+            "description": "Specify names of requested variables in a comma-separated string",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "description": "Request time series either as binary data or JSON lists of numbers",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "binary",
+                "list"
+              ]
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "format: Bearer YOUR_TOKEN",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-api-key",
+            "in": "header",
+            "description": "API key received from /account/api-key endpoint",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SessionLapResults"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Accepted. Analysis job is in progress. You should wait 5 seconds and then run the same request again."
+          },
+          "204": {
+            "description": "No Content."
+          },
+          "401": {
+            "description": "Unauthorized. Check token validity."
+          },
+          "403": {
+            "description": "Forbidden. Check x-api-key header."
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "419": {
+            "description": "Response Too Large"
+          },
+          "504": {
+            "description": "Gateway Timeout"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Register": {
+        "required": [
+          "consumerName"
+        ],
+        "type": "object",
+        "properties": {
+          "consumerName": {
+            "type": "string",
+            "example": "Firstbeat Technologies"
+          }
+        }
+      },
+      "RegisterResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "example": "0df33d4b-f526-4040-ad6e-447589f810f5"
+          },
+          "consumerName": {
+            "type": "string",
+            "example": "Firstbeat Technologies"
+          },
+          "sharedSecret": {
+            "type": "string",
+            "example": "5e03d766-4d55-4c88-a011-f0785bccb671"
+          }
+        }
+      },
+      "ApiKey": {
+        "type": "object",
+        "properties": {
+          "apiKey": {
+            "type": "string",
+            "example": "uBncM0LcXT40ncZfZYSkW448cAdPAgLCKHiJ2fG6"
+          }
+        }
+      },
+      "SharedSecret": {
+        "type": "object",
+        "properties": {
+          "sharedSecret": {
+            "type": "string",
+            "example": "4c70e131-8c81-49eb-a14f-c682c310767b"
+          }
+        }
+      },
+      "Accounts": {
+        "type": "object",
+        "properties": {
+          "accounts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Account"
+            }
+          }
+        }
+      },
+      "Account": {
+        "type": "object",
+        "properties": {
+          "accountId": {
+            "type": "string",
+            "example": "1-1"
+          },
+          "name": {
+            "type": "string",
+            "example": "Some account"
+          },
+          "authorizedBy": {
+            "type": "object",
+            "properties": {
+              "coachId": {
+                "type": "integer",
+                "example": 362791
+              }
+            }
+          }
+        }
+      },
+      "Athletes": {
+        "type": "object",
+        "properties": {
+          "more": {
+            "type": "boolean",
+            "example": false
+          },
+          "athletes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Athlete"
+            }
+          }
+        }
+      },
+      "Athlete": {
+        "type": "object",
+        "properties": {
+          "athleteId": {
+            "type": "integer",
+            "example": 356255
+          },
+          "firstName": {
+            "type": "string",
+            "example": "John"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Doe"
+          },
+          "email": {
+            "type": "string",
+            "example": "john.doe@example.com"
+          }
+        }
+      },
+      "Coaches": {
+        "type": "object",
+        "properties": {
+          "more": {
+            "type": "boolean",
+            "example": false
+          },
+          "coaches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Coach"
+            }
+          }
+        }
+      },
+      "Coach": {
+        "type": "object",
+        "properties": {
+          "coachId": {
+            "type": "integer",
+            "example": 362791
+          },
+          "firstName": {
+            "type": "string",
+            "example": "Some"
+          },
+          "lastName": {
+            "type": "string",
+            "example": "Coach"
+          },
+          "email": {
+            "type": "string",
+            "example": "some.coach@example.com"
+          }
+        }
+      },
+      "Teams": {
+        "type": "object",
+        "properties": {
+          "more": {
+            "type": "boolean",
+            "example": false
+          },
+          "teams": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Team"
+            }
+          }
+        }
+      },
+      "Team": {
+        "type": "object",
+        "properties": {
+          "teamId": {
+            "type": "integer",
+            "example": 1786
+          },
+          "name": {
+            "type": "string",
+            "example": "A great team"
+          },
+          "athleteIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "example": 356262
+            }
+          },
+          "groups": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Group"
+            }
+          }
+        }
+      },
+      "Group": {
+        "type": "object",
+        "properties": {
+          "groupId": {
+            "type": "integer",
+            "example": 1902
+          },
+          "name": {
+            "type": "string",
+            "example": "Some group"
+          },
+          "athleteIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "example": 356301
+            }
+          }
+        }
+      },
+      "Sessions": {
+        "type": "object",
+        "properties": {
+          "more": {
+            "type": "boolean",
+            "example": false
+          },
+          "sessions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Session"
+            }
+          }
+        }
+      },
+      "Session": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "integer",
+            "example": 41
+          },
+          "coachId": {
+            "type": "integer",
+            "example": 371
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2015-09-25T07:47:26Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2015-09-25T08:33:12Z"
+          },
+          "sessionType": {
+            "type": "string",
+            "example": "Morning exercise"
+          },
+          "sportsType": {
+            "type": "string",
+            "example": "running"
+          },
+          "eventType": {
+            "type": "string",
+            "example": "training"
+          },
+          "notes": {
+            "type": "string",
+            "example": "Thirty minutes of interval training"
+          },
+          "athleteIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "example": 356361
+            }
+          },
+          "laps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SessionLap"
+            }
+          }
+        }
+      },
+      "SessionLap": {
+        "type": "object",
+        "properties": {
+          "lapId": {
+            "type": "integer",
+            "example": 864843
+          },
+          "name": {
+            "type": "string",
+            "example": "2nd interval"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2015-09-25T07:50:32Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2015-09-25T07:52:30Z"
+          },
+          "athleteIds": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "example": 356361
+            }
+          }
+        }
+      },
+      "SessionResults": {
+        "type": "object",
+        "properties": {
+          "measurements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SessionMeasurementResults"
+            }
+          }
+        }
+      },
+      "Measurements": {
+        "type": "object",
+        "properties": {
+          "more": {
+            "type": "boolean",
+            "example": false
+          },
+          "measurements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AthleteMeasurement"
+            }
+          }
+        }
+      },
+      "AthleteMeasurement": {
+        "type": "object",
+        "properties": {
+          "measurementId": {
+            "type": "integer",
+            "example": 3397522
+          },
+          "athleteId": {
+            "type": "integer",
+            "example": 356262
+          },
+          "sessionId": {
+            "type": "integer",
+            "example": 41289
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2015-09-25T07:47:26Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2015-09-25T08:33:12Z"
+          },
+          "measurementType": {
+            "type": "string",
+            "enum": [
+              "exercise",
+              "quickRecoveryTest",
+              "night",
+              "manual"
+            ],
+            "example": "exercise"
+          },
+          "exerciseType": {
+            "type": "string",
+            "example": "Morning exercise"
+          },
+          "sportsType": {
+            "type": "string",
+            "example": "running"
+          },
+          "eventType": {
+            "type": "string",
+            "example": "training"
+          },
+          "notes": {
+            "type": "string",
+            "example": "Thirty minutes of interval training"
+          },
+          "laps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MeasurementLap"
+            }
+          }
+        }
+      },
+      "MeasurementLap": {
+        "type": "object",
+        "properties": {
+          "lapId": {
+            "type": "integer",
+            "example": 864843
+          },
+          "name": {
+            "type": "string",
+            "example": "2nd interval"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2015-09-25T07:50:32Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2015-09-25T07:52:30Z"
+          }
+        }
+      },
+      "SessionMeasurementResults": {
+        "type": "object",
+        "properties": {
+          "athleteId": {
+            "type": "integer",
+            "example": 77013
+          },
+          "sessionId": {
+            "type": "integer",
+            "example": 41189
+          },
+          "measurementId": {
+            "type": "integer",
+            "example": 3397522
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2015-09-25T07:47:26Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2015-09-25T08:33:12Z"
+          },
+          "exerciseType": {
+            "type": "string",
+            "example": "Morning exercise"
+          },
+          "sportsType": {
+            "type": "string",
+            "example": "running"
+          },
+          "eventType": {
+            "type": "string",
+            "example": "training"
+          },
+          "notes": {
+            "type": "string",
+            "example": "Thirty minutes of interval training"
+          },
+          "variables": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/Variable"
+                },
+                {
+                  "$ref": "#/components/schemas/TimeSeriesVariable"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "AthleteMeasurementResults": {
+        "type": "object",
+        "properties": {
+          "athleteId": {
+            "type": "integer",
+            "example": 356262
+          },
+          "measurementId": {
+            "type": "integer",
+            "example": 3397522
+          },
+          "sessionId": {
+            "type": "integer",
+            "example": 41
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2015-09-25T07:47:26Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2015-09-25T08:33:12Z"
+          },
+          "measurementType": {
+            "type": "string",
+            "enum": [
+              "exercise",
+              "quickRecoveryTest",
+              "night",
+              "manual"
+            ],
+            "example": "exercise"
+          },
+          "exerciseType": {
+            "type": "string",
+            "example": "Morning exercise"
+          },
+          "sportsType": {
+            "type": "string",
+            "example": "running"
+          },
+          "eventType": {
+            "type": "string",
+            "example": "training"
+          },
+          "notes": {
+            "type": "string",
+            "example": "Thirty minutes of interval training"
+          },
+          "variables": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/Variable"
+                },
+                {
+                  "$ref": "#/components/schemas/TimeSeriesVariable"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "AthleteMeasurementLapResults": {
+        "type": "object",
+        "properties": {
+          "athleteId": {
+            "type": "integer",
+            "example": 77013
+          },
+          "measurementId": {
+            "type": "integer",
+            "example": 3397522
+          },
+          "sessionId": {
+            "type": "integer",
+            "example": 41
+          },
+          "lapId": {
+            "type": "integer",
+            "example": 864843
+          },
+          "name": {
+            "type": "string",
+            "example": "2nd interval"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2015-09-25T07:50:32Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2015-09-25T07:52:30Z"
+          },
+          "measurementType": {
+            "type": "string",
+            "enum": [
+              "exercise",
+              "quickRecoveryTest",
+              "night",
+              "manual"
+            ],
+            "example": "exercise"
+          },
+          "exerciseType": {
+            "type": "string",
+            "example": "Morning exercise"
+          },
+          "sportsType": {
+            "type": "string",
+            "example": "running"
+          },
+          "eventType": {
+            "type": "string",
+            "example": "training"
+          },
+          "notes": {
+            "type": "string",
+            "example": "Thirty minutes of interval training"
+          },
+          "variables": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/Variable"
+                },
+                {
+                  "$ref": "#/components/schemas/TimeSeriesVariable"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "SessionLapResults": {
+        "type": "object",
+        "properties": {
+          "measurements": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SessionLapMeasurementResults"
+            }
+          }
+        }
+      },
+      "SessionLapMeasurementResults": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "integer",
+            "example": 41189
+          },
+          "lapId": {
+            "type": "integer",
+            "example": 864843
+          },
+          "athleteId": {
+            "type": "integer",
+            "example": 77013
+          },
+          "measurementId": {
+            "type": "integer",
+            "example": 3397522
+          },
+          "name": {
+            "type": "string",
+            "example": "2nd interval"
+          },
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2015-09-25T07:50:32Z"
+          },
+          "endTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2015-09-25T07:52:30Z"
+          },
+          "exerciseType": {
+            "type": "string",
+            "example": "Morning exercise"
+          },
+          "sportsType": {
+            "type": "string",
+            "example": "running"
+          },
+          "eventType": {
+            "type": "string",
+            "example": "training"
+          },
+          "notes": {
+            "type": "string",
+            "example": "Thirty minutes of interval training"
+          },
+          "variables": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/Variable"
+                },
+                {
+                  "$ref": "#/components/schemas/TimeSeriesVariable"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Variable": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "energyConsumptionTotal"
+          },
+          "unit": {
+            "type": "string",
+            "example": "kcal"
+          },
+          "value": {
+            "type": "number",
+            "example": 49.57954406738281
+          }
+        }
+      },
+      "TimeSeriesVariable": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "heartRateSeries"
+          },
+          "unit": {
+            "type": "string",
+            "example": "min⁻¹"
+          },
+          "samplingRate": {
+            "type": "string",
+            "example": "0,2Hz"
+          },
+          "type": {
+            "type": "string",
+            "example": "Unsigned"
+          },
+          "bits": {
+            "type": "integer",
+            "example": 8
+          },
+          "value": {
+            "type": "string",
+            "example": "eJztVwmS7KgRvc90lxYWAQIBQgi0V1VX//9nYhwTdvj+d/CjHOFLeKgIScWS5J4vr+t6nue5nNt67ueGV8rbmfOyPF/f9/vzuh/7fuKxLttyLntat/tx7s/n4/p+Pb+e1+N+YOKxn8e+zMG5IfVS9bIXUnDOu64THWeyE0LhNxhKCeOMSSFNOs913tbluqLNKaR13Zb9TPMUt7imaI0fBj34OJmVVjWTZuglV71Sfa/VII0cwjDZebZhWmNY0uKdiWkL0U8xT3l2wa/ehmWfdzlNcc5LTHGex3Fxednwlde0eXwtaQg5LCHj9B7XPC8xRBfGKU7RJzcGN/oxTLOb3bRYF88cfHRad2JQfpS+..."
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://api.firstbeat.com/v1"
+    }
+  ]
+}
