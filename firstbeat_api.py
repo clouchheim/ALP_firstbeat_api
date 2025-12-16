@@ -144,7 +144,18 @@ for athlete in athlete_w_measurements:
         resp['endTime'] = datetime.fromisoformat(resp['endTime'].replace("Z", ""))
         resp['startTime'] = datetime.fromisoformat(resp['startTime'].replace("Z", ""))
         print(resp['endTime'])
-        print(f"ID: {measurement_id}-{athlete}\nTime: {resp['endTime']}\nType: {resp['measurementType']} \nRMSSD: {resp['variables'][0]['value']}\nACWR: {resp['variables'][1]['value']}\n")
+        #print(f"ID: {measurement_id}-{athlete}\nTime: {resp['endTime']}\nType: {resp['measurementType']} \nRMSSD: {resp['variables'][0]['value']}\nACWR: {resp['variables'][1]['value']}\n")
+
+        # get variables
+        try:
+            rmssd_value = resp['variables'][0]['value']
+        except (IndexError, KeyError):
+            rmssd_value = ""
+        try:
+            acwr_value = resp['variables'][1]['value']
+        except (IndexError, KeyError):
+            acwr_value = ""
+
         session = {
             'start_date' : resp['startTime'].strftime("%d/%m/%Y"),
             'start_time' : str(resp['startTime'].strftime("%I:%M %p").lstrip("0")),
@@ -156,8 +167,8 @@ for athlete in athlete_w_measurements:
             'Time': str(resp['endTime'].strftime("%I:%M %p").lstrip("0")),
             'ID':f'{measurement_id}-{athlete}' , 
             'Session Type': resp['measurementType'],
-            'RMSSD': resp['variables'][0]['value'], 
-            'ACWR': resp['variables'][1]['value']
+            'RMSSD': rmssd_value, 
+            'ACWR': acwr_value
         }
         rmssd.append(session)
 
