@@ -6,6 +6,7 @@ import pandas as pd
 import requests
 from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
 
 # =========================
 # ENV + AUTH SETUP + GLOBALS
@@ -19,7 +20,7 @@ SHARED_SECRET = os.getenv("SHARED_SECRET")
 API_KEY = os.getenv("API_KEY")
 
 TEAM_ID = 20168 # all MALP and WALP on Firstbeat
-LAST_X_DAYS = 1 # just from time of run back 24 hours (NOTE: data must be loaded into firstbeat cloud)
+LAST_X_HOURS = 2 # just from time of run back 24 hours (NOTE: data must be loaded into firstbeat cloud)
 USSS_COACH_ID = '3-4925' # U.S. Ski and Snowboard id
 
 # IF missing correct infomration (probably in .env file, raise error)
@@ -44,16 +45,13 @@ def auth_headers():
     }
 
 # GET time bounds (from x days back, to present moment)
-def last_x_days_utc_range(days_back):
-    today_utc = datetime.now(timezone.utc).date()
-    past_utc = today_utc - timedelta(days=days_back)
-
-    from_time = datetime.combine(past_utc, datetime.min.time(), tzinfo=timezone.utc)
-    to_time   = datetime.combine(today_utc, datetime.max.time(), tzinfo=timezone.utc)
+def last_x_hours_range(hours_back):
+    now_utc = datetime.now(timezone.utc)
+    from_time = now_utc - timedelta(hours=hours_back)
 
     return (
         from_time.isoformat().replace("+00:00", "Z"),
-        to_time.isoformat().replace("+00:00", "Z")
+        now_utc.isoformat().replace("+00:00", "Z")
     )
 
 # =========================
@@ -108,35 +106,6 @@ def get_measurement_results(athlete_id, measurement_id):
     return resp.json()
 
 # =========================
-# STEP 1 — ACCOUNTS
-# =========================
-'''accounts_resp = test_endpoint("Accounts", f"{BASE_URL}/sports/accounts")
-if accounts_resp.status_code != 200:
-    print("\n❌ Cannot access accounts — stop here.")
-    exit()
-coach_accounts = accounts_resp.json().get("accounts", [])
-print(coach_accounts) 
-if not coach_accounts:
-    print("\n⚠️ No accounts returned.")
-    exit()'''
-
-# =========================
-# STEP 2 — TEAMS - right now commented out because I have my hard coded TEAM_ID
-# =========================
-'''teams_resp = test_endpoint(
-    "Teams",
-    f"{BASE_URL}/sports/accounts/{USSS_COACH_ID}/teams"
-)
-if teams_resp.status_code != 200:
-    print("\n Cannot access teams — stop here.")
-    exit()
-teams = teams_resp.json().get("teams", [])
-print(teams)
-if not teams:
-    print("\n⚠️ No teams returned.")
-    exit()'''
-
-# =========================
 # STEP 3 — ATHLETES
 # =========================
 athletes_resp = test_endpoint(
@@ -154,7 +123,7 @@ print(f"Found {len(athletes)} athletes")
 # =========================
 
 # get measurementIds for athelte sessions in last x days
-from_time, to_time = last_x_days_utc_range(LAST_X_DAYS) # get time intervals for last day
+from_time, to_time = last_x_hours_range(LAST_X_HOURS) # get time intervals for last day
 measurements = {}
 for athlete in tqdm(athletes, "Fetching Athlete Sessions"):
     athlete_id = athlete['athleteId']
@@ -173,13 +142,18 @@ for athlete in athlete_w_measurements:
     for measurement_id in measurements[athlete]:
         resp = get_measurement_results(athlete, measurement_id)
         resp['endTime'] = datetime.fromisoformat(resp['endTime'].replace("Z", ""))
+        resp['startTime'] = datetime.fromisoformat(resp['startTime'].replace("Z", ""))
         print(resp['endTime'])
         print(f"ID: {measurement_id}-{athlete}\nTime: {resp['endTime']}\nType: {resp['measurementType']} \nRMSSD: {resp['variables'][0]['value']}\nACWR: {resp['variables'][1]['value']}\n")
         session = {
-            'Firstname': athlete_names[athlete].split()[0],
-            'Lastname': athlete_names[athlete].split()[1],
-            'Date': str(resp['endTime']).split()[0],
-            'Time': str(resp['endTime']).split()[1],
+            'start_date' : resp['startTime'].strftime("%d/%m/%Y"),
+            'start_time' : str(resp['startTime'].strftime("%I:%M %p").lstrip("0")),
+            'end_date' : resp['endTime'].strftime("%d/%m/%Y"),
+            'end_time' : str(resp['endTime'].strftime("%I:%M %p").lstrip("0")),
+            'First Name': athlete_names[athlete].split()[0],
+            'Last Name': athlete_names[athlete].split()[1],
+            'Date': resp['endTime'].strftime("%d/%m/%Y"),
+            'Time': str(resp['endTime'].strftime("%I:%M %p").lstrip("0")),
             'ID':f'{measurement_id}-{athlete}' , 
             'Session Type': resp['measurementType'],
             'RMSSD': resp['variables'][0]['value'], 
@@ -189,6 +163,6 @@ for athlete in athlete_w_measurements:
 
 df = pd.DataFrame(rmssd)
 print(df)
+df.to_csv('firstbeat_data.csv')
 
 print("\n=== DONE WITH FIRSTBEAT API===\n")
-
