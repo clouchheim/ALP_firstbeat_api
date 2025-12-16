@@ -1,6 +1,8 @@
 import os
 import time
 import jwt
+from tqdm import tqdm
+import pandas as pd
 import requests
 from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
@@ -58,14 +60,14 @@ def last_x_days_utc_range(days_back):
 # HELPER FOR API REQUESTS
 # =========================
 def test_endpoint(name, url, params=None, max_retries=5):
-    print(f"\n--- {name} ---")
+    #print(f"\n--- {name} ---")
     headers = auth_headers()
     #print("Authorization header (first 60):", headers["Authorization"][:60])
     #print("x-api-key (first 8):", headers["x-api-key"][:8])
 
     for attempt in range(max_retries):
         r = requests.get(url, headers=headers, params=params)
-        print(f"Status: {r.status_code}")
+        #print(f"Status: {r.status_code}")
         if r.status_code == 202:
             print("Analysis in progress, retrying in 5s...")
             time.sleep(5)
@@ -87,8 +89,8 @@ def get_measurement_ids(athlete_id, from_time, to_time, name=''):
         if "measurementId" in m
     ]
 
-    if len(measurement_ids) > 0:
-        print(f'\n-- Found {len(measurement_ids)} measurement for {name} --')
+    #if len(measurement_ids) > 0:
+        #print(f'\n-- Found {len(measurement_ids)} measurement for {name} --')
 
     return measurement_ids
 
@@ -98,11 +100,12 @@ def get_measurement_results(athlete_id, measurement_id):
         f"{BASE_URL}/sports/accounts/{USSS_COACH_ID}/athletes/{athlete_id}/measurements/{measurement_id}/results",
         params={
             "format": "list",
-            "var": "rmssd"
+            "var": "rmssd,acwr"
         }
     )
 
-    return resp.text
+    resp.raise_for_status()
+    return resp.json()
 
 # =========================
 # STEP 1 — ACCOUNTS
@@ -141,6 +144,9 @@ athletes_resp = test_endpoint(
     f"{BASE_URL}/sports/accounts/{USSS_COACH_ID}/teams/{TEAM_ID}/athletes"
 )
 athletes = athletes_resp.json().get("athletes", [])
+athlete_names = {}
+for athlete in athletes:
+    athlete_names[athlete['athleteId']] = f"{athlete['firstName']} {athlete['lastName']}"
 print(f"Found {len(athletes)} athletes")
 
 # =========================
@@ -150,43 +156,39 @@ print(f"Found {len(athletes)} athletes")
 # get measurementIds for athelte sessions in last x days
 from_time, to_time = last_x_days_utc_range(LAST_X_DAYS) # get time intervals for last day
 measurements = {}
-for athlete in athletes:
+for athlete in tqdm(athletes, "Fetching Athlete Sessions"):
     athlete_id = athlete['athleteId']
-    name = f"{athlete['firstName']} {athlete['lastName']}"
+    name = athlete_names[athlete_id]
 
     # Pull athlete 'measurements'
-    measurement_ids = get_measurement_ids(athlete_id, from_time, to_time, name='')
+    measurement_ids = get_measurement_ids(athlete_id, from_time, to_time, name=name)
     if measurement_ids != []:
         measurements[athlete_id] = measurement_ids
-
-print(measurements)
 
 # get results of the measuremnts 
 rmssd = []
 athlete_w_measurements = list(measurements.keys())
 for athlete in athlete_w_measurements:
+    print(f'--- Getting Measurements for {athlete_names[athlete]} ---')
     for measurement_id in measurements[athlete]:
         resp = get_measurement_results(athlete, measurement_id)
-        print(resp)
-        rmssd.append(resp)
+        resp['endTime'] = datetime.fromisoformat(resp['endTime'].replace("Z", ""))
+        print(resp['endTime'])
+        print(f"ID: {measurement_id}-{athlete}\nTime: {resp['endTime']}\nType: {resp['measurementType']} \nRMSSD: {resp['variables'][0]['value']}\nACWR: {resp['variables'][1]['value']}\n")
+        session = {
+            'Firstname': athlete_names[athlete].split()[0],
+            'Lastname': athlete_names[athlete].split()[1],
+            'Date': str(resp['endTime']).split()[0],
+            'Time': str(resp['endTime']).split()[1],
+            'ID':f'{measurement_id}-{athlete}' , 
+            'Session Type': resp['measurementType'],
+            'RMSSD': resp['variables'][0]['value'], 
+            'ACWR': resp['variables'][1]['value']
+        }
+        rmssd.append(session)
 
-# =========================
-# STEP 5 — Measurement results RESULTS --> 
-# =========================
-'''athlete_id = 570111          # River
-measurement_id = 14825086   # 12–14 quick recovery test
+df = pd.DataFrame(rmssd)
+print(df)
 
-measurement_resp = test_endpoint(
-    f"TEST: Measurement results (athlete {athlete_id} for measurement {measurement_id})",
-    f"{BASE_URL}/sports/accounts/{USSS_COACH_ID}/athletes/{athlete_id}/measurements/{measurement_id}/results",
-    params={
-        "format": "list",
-        # Optional: only request specific variables if you know them
-        # "var": "hr,rr,rmssd"
-    }
-)
-
-print(measurement_resp.text)'''
-
-print("\n=== DONE ===")
+print("\n=== DONE WITH FIRSTBEAT API===\n")
 
