@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # add schedule using cron right now every 6 hours
-# 0 */6 * * * /bin/bash/ /Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api/run_firstbeat.sh >> /Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api/run_firstbeat.log 2>&1
+# 0 */2 * * * /bin/bash/ /Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api/run_firstbeat.sh >> /Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api/run_firstbeat.log 2>&1
 
 # Path to scripts (adjust as needed)
 PYTHON_SCRIPT="/Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api/firstbeat_api.py"

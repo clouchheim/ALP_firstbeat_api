@@ -26,6 +26,12 @@ usss_athletes <- sb_get_user(
 
 #### using test csv right now
 DataUpload <- read_csv('firstbeat_data.csv', show_col_types = FALSE) 
+
+# if no data found, fail
+if (nrow(DataUpload) == 0) {
+  stop("DataUpload is empty. No rows found in firstbeat_data.csv.")
+} 
+
 DataUpload <- DataUpload %>%
   select(-c("...1")) %>%
   mutate(
