@@ -47,9 +47,13 @@ jobs:
     # -------------------------
     - name: Install R packages
       run: |
-        Rscript -e 'dir.create(Sys.getenv("R_LIBS_USER"), recursive=TRUE, showWarnings=FALSE)'
-        Rscript -e '.libPaths(Sys.getenv("R_LIBS_USER")); install.packages(c("dplyr","readr","devtools"), repos="https://cloud.r-project.org")'
-        Rscript -e '.libPaths(Sys.getenv("R_LIBS_USER")); devtools::install_github("Teamworksapp/smartabaseR")'
+        Rscript -e '
+          dir.create(Sys.getenv("R_LIBS_USER"), recursive=TRUE, showWarnings=FALSE)
+          .libPaths(Sys.getenv("R_LIBS_USER"))
+          install.packages(c("dplyr","readr","devtools"), repos="https://cloud.r-project.org")
+          library(devtools)
+          devtools::install_github("Teamworksapp/smartabaseR")
+        '
     - name: Debug environment variables
       run: |
         echo "ID is set: ${ID:+YES}" 
