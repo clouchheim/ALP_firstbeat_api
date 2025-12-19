@@ -173,8 +173,16 @@ for athlete in athlete_w_measurements:
         rmssd.append(session)
 
 df = pd.DataFrame(rmssd)
-print("Current working directory:", os.getcwd())
+csv_path = os.path.join(os.getcwd(), "firstbeat_data.csv")
 
-df.to_csv(os.path.join(os.getcwd(), 'firstbeat_data.csv'), index=False)
+if len(rmssd) == 0:
+    print("WARNING: No measurement data found, CSV will be empty.")
+    # still create CSV so workflow doesn't fail at -f check
+    pd.DataFrame([]).to_csv(csv_path, index=False)
+else:
+    df = pd.DataFrame(rmssd)
+    df.to_csv(csv_path, index=False)
+
+print(f"CSV written to {csv_path} with {len(rmssd)} rows")
 
 print("\n=== DONE WITH FIRSTBEAT API===\n")
