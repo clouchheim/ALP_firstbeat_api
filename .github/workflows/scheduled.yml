@@ -39,12 +39,8 @@ jobs:
       - name: Install R packages
         run: |
           Rscript -e 'install.packages(c(
-            "tidyverse",
-            "lubridate",
-            "httr",
-            "purrr",
-            "stringr",
-            "zoo",
+            "dplyr",
+            "readr",
             "smartabaseR"
           ), repos="https://cloud.r-project.org")'
 
