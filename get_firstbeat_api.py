@@ -1,129 +1,188 @@
+import os
 import time
-import json
-import jwt # pyjwt
+import jwt
+from tqdm import tqdm
+import pandas as pd
 import requests
 from dotenv import load_dotenv
-import os
+from datetime import datetime, timedelta, timezone
+from zoneinfo import ZoneInfo
 
+# =========================
+# ENV + AUTH SETUP + GLOBALS
+# =========================
+load_dotenv()
 
 BASE_URL = "https://api.firstbeat.com/v1"
-API_KEY = ''
 
-# put your creditials in a .env file
-# echo "SHARED_SECRET=your_shared_secret_here" > .env
-# echo "ID=your_consumer_id_here" >> .env
-# call cat .env in command line to verify it's there
-# do not push your .env file to github or any public repository, 
-# this would expose the information get the API key
+CONSUMER_ID = os.getenv("ID")
+SHARED_SECRET = os.getenv("SHARED_SECRET")
+API_KEY = os.getenv("API_KEY")
 
-load_dotenv()
-CONSUMER_ID: str = os.getenv("ID")
-SHARED_SECRET: str = os.getenv("SHARED_SECRET")
+TEAM_ID = 20168 # all MALP and WALP on Firstbeat
+LAST_X_HOURS = 24 # just from time of run back 24 hours (NOTE: data must be loaded into firstbeat cloud) # last run at 8:30
+USSS_COACH_ID = '3-4925' # U.S. Ski and Snowboard id
 
-def generate_jwt_token(shared_secret: str, consumer_id: str) -> str:    
-    """  
-    JWT token is valid for five minutes so it's valid approach to generate a new token for each API query.
-    """
+# IF missing correct infomration (probably in .env file, raise error)
+if not CONSUMER_ID or not SHARED_SECRET or not API_KEY:
+    raise RuntimeError("Missing ID, SHARED_SECRET, or API_KEY in .env")
 
-    secret: str = shared_secret
+# GENERATE valid jwt key for header
+def generate_jwt():
     now = int(time.time())
-    expires = now + 300
-    payload = {"iss": consumer_id, "iat": now, "exp": expires}
+    payload = {"iss": CONSUMER_ID, "iat": now, "exp": now + 300}
+    token = jwt.encode(payload, SHARED_SECRET, algorithm="HS256")
+    if isinstance(token, bytes):
+        token = token.decode("utf-8")
+    return token
 
-    return jwt.encode(payload, secret, algorithm='HS256')
-
-def get_api_key():
-    """    
-    You need to include a JWT token in the query to create an API key. The API key only created once, so same repsonse in subsequent calls.
-
-    As a response you get:
-
-    {"apikey":"YOUR API KEY HERE"}
-
-    """
-    return requests.get(f"{BASE_URL}/account/api-key", headers=generate_headers()).json()["apikey"]
-
-def generate_headers():
-
-    """
-    You need to include JWT token and API key in all API request excluding API key generation and API consumer creation (registration).
-
-    Example headers:
-        Authorization: Bearer eyJ0eXAiOiJKV1QiLCJ ...
-        x-api-key: tQdt8RfzA....
-    """
-
-    query_headers = {
-
-        "Authorization": "Bearer " + generate_jwt_token(SHARED_SECRET, CONSUMER_ID),
+# define headers for all api calls
+def auth_headers():
+    return {
+        "Authorization": f"Bearer {generate_jwt()}",
         "x-api-key": API_KEY,
+        "Accept": "application/json"
     }
 
-    return query_headers
+# GET time bounds (from x days back, to present moment)
+def last_x_hours_range(hours_back):
+    now_utc = datetime.now(timezone.utc)
+    from_time = now_utc - timedelta(hours=hours_back)
 
-def get_accounts():
+    return (
+        from_time.isoformat().replace("+00:00", "Z"),
+        now_utc.isoformat().replace("+00:00", "Z")
+    )
 
-    """Get accounts assigned to the API consumer
+# =========================
+# HELPER FOR API REQUESTS
+# =========================
+def test_endpoint(name, url, params=None, max_retries=5):
+    print(f"\n--- {name} ---")
+    headers = auth_headers()
+    #print("Authorization header (first 60):", headers["Authorization"][:60])
+    #print("x-api-key (first 8):", headers["x-api-key"][:8])
 
-    One or more accounts can be assigned to one API consumer.
+    for attempt in range(max_retries):
+        r = requests.get(url, headers=headers, params=params)
+        #print(f"Status: {r.status_code}")
+        if r.status_code == 202:
+            print("Analysis in progress, retrying in 5s...")
+            time.sleep(5)
+            continue
+        break
+    
+    return r
 
-    Account can be accessed via Sports Cloud API if:
+def get_measurement_ids(athlete_id, from_time, to_time, name=''):
+    measurement = test_endpoint( 
+        f"Measurements (athlete {name} ({athlete_id}))", 
+        f"{BASE_URL}/sports/accounts/{USSS_COACH_ID}/athletes/{athlete_id}/measurements/", 
+        params={"fromTime": from_time, "toTime": to_time})
 
-        1) Firstbeat support has granted access for your API consumer for the specific account(s)
-        2) Account owner (for example team coach) has granted access to their account data
+    # Get ids of measurements to pull results
+    measurement_ids = [
+        m["measurementId"]
+        for m in measurement.json().get("measurements", [])
+        if "measurementId" in m
+    ]
 
-    Use the accountId in the subsequent queries to work with the selected account.
+    #if len(measurement_ids) > 0:
+        #print(f'\n-- Found {len(measurement_ids)} measurement for {name} --')
 
-    Example response:
+    return measurement_ids
 
-    {
-        "accounts": [
-            {
-                "accountId": "3-99999",
-                "name": "FC Firstbeat",
-                "authorizedBy": {
-                    "coachId": 12345
-                }
-            },
-            {
-                "accountId": "3-99998",
-                "name": "Firstbeat Ice Hockey Team",
-                "authorizedBy": {
-                    "coachId": 67890
-                }
-            },
-            {
-                "accountId": "3-99997",
-                "name": "FC Firstbeat Juniors",
-                "authorizedBy": {
-                    "coachId": 99999
-                }
-            }
-        ]
-    }
+def get_measurement_results(athlete_id, measurement_id):
+    resp = test_endpoint(
+        f"Measurement Results ({measurement_id}-{athlete_id})",
+        f"{BASE_URL}/sports/accounts/{USSS_COACH_ID}/athletes/{athlete_id}/measurements/{measurement_id}/results",
+        params={
+            "format": "list",
+            "var": "rmssd,acwr"
+        }
+    )
 
-    """
+    resp.raise_for_status()
+    return resp.json()
 
-    return requests.get(f"{BASE_URL}/sports/accounts/", headers=generate_headers())
+# =========================
+# STEP 3 — ATHLETES
+# =========================
+athletes_resp = test_endpoint(
+    "Athlete List",
+    f"{BASE_URL}/sports/accounts/{USSS_COACH_ID}/teams/{TEAM_ID}/athletes"
+)
+athletes = athletes_resp.json().get("athletes", [])
+athlete_names = {}
+for athlete in athletes:
+    athlete_names[athlete['athleteId']] = f"{athlete['firstName']} {athlete['lastName']}"
+print(f"Found {len(athletes)} athletes")
 
-# ===
+# =========================
+# STEP 4 — GET ATHLETE MEASUREMENTS (think of as a session)
+# =========================
 
-def main():
-   
-    global API_KEY
-   
-    if not CONSUMER_ID or not SHARED_SECRET:
-        print("Please set CONSUMER_ID and SHARED_SECRET")
-        return
+# get measurementIds for athelte sessions in last x days
+from_time, to_time = last_x_hours_range(LAST_X_HOURS) # get time intervals for last day
+measurements = {}
+for athlete in tqdm(athletes, "Fetching Athlete Sessions"):
+    athlete_id = athlete['athleteId']
+    name = athlete_names[athlete_id]
 
-    print(f'JWT token: {generate_jwt_token(shared_secret=SHARED_SECRET, consumer_id=CONSUMER_ID)}')
-   
-    API_KEY = get_api_key()
-    print(f'apikey: {API_KEY}')
+    # Pull athlete 'measurements'
+    measurement_ids = get_measurement_ids(athlete_id, from_time, to_time, name=name)
+    if measurement_ids != []:
+        measurements[athlete_id] = measurement_ids
 
-    accounts = get_accounts()
-    print(accounts)
-    print(json.dumps(accounts.json(), indent=2))
+# get results of the measuremnts 
+rmssd = []
+athlete_w_measurements = list(measurements.keys())
+for athlete in athlete_w_measurements:
+    print(f'--- Getting Measurements for {athlete_names[athlete]} ---')
+    for measurement_id in measurements[athlete]:
+        resp = get_measurement_results(athlete, measurement_id)
+        resp['endTime'] = datetime.fromisoformat(resp['endTime'].replace("Z", ""))
+        resp['startTime'] = datetime.fromisoformat(resp['startTime'].replace("Z", ""))
+        print(resp['endTime'])
+        #print(f"ID: {measurement_id}-{athlete}\nTime: {resp['endTime']}\nType: {resp['measurementType']} \nRMSSD: {resp['variables'][0]['value']}\nACWR: {resp['variables'][1]['value']}\n")
 
-if __name__ == "__main__":
-    main()
+        # get variables
+        try:
+            rmssd_value = resp['variables'][0]['value']
+        except (IndexError, KeyError):
+            rmssd_value = ""
+        try:
+            acwr_value = resp['variables'][1]['value']
+        except (IndexError, KeyError):
+            acwr_value = ""
+
+        session = {
+            'start_date' : resp['startTime'].strftime("%d/%m/%Y"),
+            'start_time' : str(resp['startTime'].strftime("%I:%M %p").lstrip("0")),
+            'end_date' : resp['endTime'].strftime("%d/%m/%Y"),
+            'end_time' : str(resp['endTime'].strftime("%I:%M %p").lstrip("0")),
+            'First Name': athlete_names[athlete].split()[0],
+            'Last Name': athlete_names[athlete].split()[1],
+            'Date': resp['endTime'].strftime("%d/%m/%Y"),
+            'Time': str(resp['endTime'].strftime("%I:%M %p").lstrip("0")),
+            'ID':f'{measurement_id}-{athlete}' , 
+            'Session Type': resp['measurementType'],
+            'RMSSD': rmssd_value, 
+            'ACWR': acwr_value
+        }
+        rmssd.append(session)
+
+df = pd.DataFrame(rmssd)
+csv_path = os.path.join(os.getcwd(), "firstbeat_data.csv")
+
+if len(rmssd) == 0:
+    print("WARNING: No measurement data found, CSV will be empty.")
+    # still create CSV so workflow doesn't fail at -f check
+    pd.DataFrame([]).to_csv(csv_path, index=False)
+else:
+    df = pd.DataFrame(rmssd)
+    df.to_csv(csv_path, index=False)
+
+print(f"CSV written to {csv_path} with {len(rmssd)} rows")
+
+print("\n=== DONE WITH FIRSTBEAT API===\n")
