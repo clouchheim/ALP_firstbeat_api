@@ -1,3 +1,6 @@
+# ensure R sees cached library
+.libPaths(c(Sys.getenv("R_LIBS_USER"), .libPaths()))
+
 library(dplyr)
 library(readr)
 library(smartabaseR)
