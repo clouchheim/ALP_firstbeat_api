@@ -43,6 +43,22 @@ jobs:
         use-public-rspm: true
 
     # -------------------------
+    # Install R packages
+    # -------------------------
+    - name: Install R packages
+      run: |
+        Rscript -e 'dir.create(Sys.getenv("R_LIBS_USER"), recursive=TRUE, showWarnings=FALSE)'
+        Rscript -e '.libPaths(Sys.getenv("R_LIBS_USER")); install.packages(c("dplyr","readr","devtools"), repos="https://cloud.r-project.org")'
+        Rscript -e '.libPaths(Sys.getenv("R_LIBS_USER")); devtools::install_github("Teamworksapp/smartabaseR")'
+    - name: Debug environment variables
+      run: |
+        echo "ID is set: ${ID:+YES}" 
+        echo "SHARED_SECRET is set: ${SHARED_SECRET:+YES}"
+        echo "API_KEY is set: ${API_KEY:+YES}"
+        echo "SB_USERNAME is set: ${SB_USERNAME:+YES}"
+        echo "SB_PASSWORD is set: ${SB_PASSWORD:+YES}"
+
+    # -------------------------
     # Cache R packages
     # -------------------------
     - name: Cache R packages
@@ -52,22 +68,6 @@ jobs:
         key: ${{ runner.os }}-r-packages-${{ hashFiles('**/*.R') }}
         restore-keys: |
           ${{ runner.os }}-r-packages-
-
-    # -------------------------
-    # Install R packages
-    # -------------------------
-    - name: Install R packages
-      run: |
-        Rscript -e 'dir.create(Sys.getenv("R_LIBS_USER"), recursive=TRUE, showWarnings=FALSE)'
-        Rscript -e '.libPaths(Sys.getenv("R_LIBS_USER")); install.packages(c("dplyr","readr","smartabaseR"), repos="https://cloud.r-project.org")'
-
-    - name: Debug environment variables
-      run: |
-        echo "ID is set: ${ID:+YES}" 
-        echo "SHARED_SECRET is set: ${SHARED_SECRET:+YES}"
-        echo "API_KEY is set: ${API_KEY:+YES}"
-        echo "SB_USERNAME is set: ${SB_USERNAME:+YES}"
-        echo "SB_PASSWORD is set: ${SB_PASSWORD:+YES}"
         
     # -------------------------
     # Run Firstbeat pipeline
