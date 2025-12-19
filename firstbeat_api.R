@@ -6,9 +6,6 @@ library(smartabaseR)
 username <- Sys.getenv("SB_USERNAME")
 password <- Sys.getenv("SB_PASSWORD")
 
-username <- "carter.louchheim"
-password <- "Athlete360"
-
 usss_athletes <- sb_get_user(
   url = "https://usopc.smartabase.com/athlete360-usss/",
   username = username,
