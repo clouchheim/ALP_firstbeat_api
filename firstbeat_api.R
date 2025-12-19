@@ -6,6 +6,9 @@ library(smartabaseR)
 username <- Sys.getenv("SB_USERNAME")
 password <- Sys.getenv("SB_PASSWORD")
 
+username <- "carter.louchheim"
+password <- "Athlete360"
+
 usss_athletes <- sb_get_user(
   url = "https://usopc.smartabase.com/athlete360-usss/",
   username = username,
@@ -28,7 +31,6 @@ if (nrow(DataUpload) == 0) {
 } 
 
 DataUpload <- DataUpload %>%
-  select(-c("...1")) %>%
   mutate(
     Date = as.Date(Date),
     start_time = format(strptime(start_time, "%H:%M:%S"), "%I:%M %p"),
