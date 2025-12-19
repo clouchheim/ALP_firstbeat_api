@@ -42,9 +42,15 @@ jobs:
       with:
         use-public-rspm: true
 
+
     # -------------------------
     # Install R packages
     # -------------------------
+    - name: Install system dependencies for devtools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev build-essential
+
     - name: Install R packages
       run: |
         Rscript -e '
