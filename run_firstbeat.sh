@@ -1,17 +1,32 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# add schedule using cron right now every 6 hours
-# 0 */2 * * * /bin/bash/ /Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api/run_firstbeat.sh >> /Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api/run_firstbeat.log 2>&1
+echo "=== Starting Firstbeat pipeline ==="
 
-# Path to scripts (adjust as needed)
-PYTHON_SCRIPT="/Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api/firstbeat_api.py"
-R_SCRIPT="/Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api/firstbeat_api.R"
+# Ensure we are running from the repo root
+REPO_ROOT="$(cd "$(dirname "$0")" && pwd)"
+cd "$REPO_ROOT"
 
-# Run Python script to generate CSV
-python3 "$PYTHON_SCRIPT"
+echo "Working directory: $(pwd)"
 
-# Short delay (5 seconds) to let write time
-sleep 5
+# -------------------------
+# Run Python data pull
+# -------------------------
+echo "Running Firstbeat API Python script..."
+python get_firstbeat_api.py
 
-# Run R script to upload CSV and delete it
-Rscript "$R_SCRIPT"
+# -------------------------
+# Optional: sanity check CSV
+# -------------------------
+if [[ ! -f firstbeat_data.csv ]]; then
+  echo "ERROR: firstbeat_data.csv was not created"
+  exit 1
+fi
+
+# -------------------------
+# Run R processing + upload
+# -------------------------
+echo "Running R Smartabase upload script..."
+Rscript firstbeat_api.R
+
+echo "=== Firstbeat pipeline completed successfully ==="
