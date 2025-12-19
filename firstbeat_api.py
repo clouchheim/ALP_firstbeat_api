@@ -173,7 +173,8 @@ for athlete in athlete_w_measurements:
         rmssd.append(session)
 
 df = pd.DataFrame(rmssd)
-print(df)
-df.to_csv('firstbeat_data.csv')
+print("Current working directory:", os.getcwd())
+
+df.to_csv(os.path.join(os.getcwd(), 'firstbeat_data.csv'), index=False)
 
 print("\n=== DONE WITH FIRSTBEAT API===\n")
