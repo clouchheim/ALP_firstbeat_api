@@ -8,7 +8,12 @@ on:
 jobs:
   firstbeat:
     runs-on: ubuntu-latest
-
+    env:
+      ID: ${{ secrets.ID }}
+      SHARED_SECRET: ${{ secrets.SHARED_SECRET }}
+      API_KEY: ${{ secrets.API_KEY }}
+      SB_USERNAME: ${{ secrets.SB_USERNAME }}
+      SB_PASSWORD: ${{ secrets.SB_PASSWORD }}
     steps:
     # -------------------------
     # Checkout repo
@@ -55,6 +60,14 @@ jobs:
       run: |
         Rscript -e 'install.packages(c("dplyr","readr","smartabaseR"), repos="https://cloud.r-project.org")'
 
+    - name: Debug environment variables
+      run: |
+        echo "ID is set: ${ID:+YES}" 
+        echo "SHARED_SECRET is set: ${SHARED_SECRET:+YES}"
+        echo "API_KEY is set: ${API_KEY:+YES}"
+        echo "SB_USERNAME is set: ${SB_USERNAME:+YES}"
+        echo "SB_PASSWORD is set: ${SB_PASSWORD:+YES}"
+        
     # -------------------------
     # Run Firstbeat pipeline
     # -------------------------
