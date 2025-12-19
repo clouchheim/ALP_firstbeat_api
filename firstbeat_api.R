@@ -1,11 +1,6 @@
 library(dplyr)
-library(tidyverse)
-library(stringr)
-library(lubridate)
-library(httr)
-library(purrr)
+library(readr)
 library(smartabaseR)
-library(zoo)
 
 ##### Get User Info from Athlete 360. User ID will be required to import data into site.
 username <- Sys.getenv("SB_USERNAME")
