@@ -20,7 +20,7 @@ SHARED_SECRET = os.getenv("SHARED_SECRET")
 API_KEY = os.getenv("API_KEY")
 
 TEAM_ID = 20168 # all MALP and WALP on Firstbeat
-LAST_X_HOURS = 72 # just from time of run back 24 hours (NOTE: data must be loaded into firstbeat cloud) # last run at 8:30
+LAST_X_HOURS = 24 # just from time of run back 24 hours (NOTE: data must be loaded into firstbeat cloud) # last run at 8:30
 USSS_COACH_ID = '3-4925' # U.S. Ski and Snowboard id
 
 # IF missing correct infomration (probably in .env file, raise error)
@@ -58,7 +58,7 @@ def last_x_hours_range(hours_back):
 # HELPER FOR API REQUESTS
 # =========================
 def test_endpoint(name, url, params=None, max_retries=5):
-    #print(f"\n--- {name} ---")
+    print(f"\n--- {name} ---")
     headers = auth_headers()
     #print("Authorization header (first 60):", headers["Authorization"][:60])
     #print("x-api-key (first 8):", headers["x-api-key"][:8])
