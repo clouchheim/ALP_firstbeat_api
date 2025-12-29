@@ -9,6 +9,7 @@ jobs:
   firstbeat:
     runs-on: ubuntu-latest
     env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       ID: ${{ secrets.ID }}
       SHARED_SECRET: ${{ secrets.SHARED_SECRET }}
       API_KEY: ${{ secrets.API_KEY }}
