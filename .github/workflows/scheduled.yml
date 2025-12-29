@@ -2,7 +2,7 @@ name: Firstbeat scheduled pipeline
 
 on:
   schedule:
-    - cron: "0 */6 * * *"  # every 6 hours
+    - cron: "0 */6 * * *"
   workflow_dispatch:
 
 jobs:
@@ -14,18 +14,17 @@ jobs:
       API_KEY: ${{ secrets.API_KEY }}
       SB_USERNAME: ${{ secrets.SB_USERNAME }}
       SB_PASSWORD: ${{ secrets.SB_PASSWORD }}
+
     steps:
     # -------------------------
     # Checkout repo
     # -------------------------
-    - name: Checkout repo
-      uses: actions/checkout@v3
+    - uses: actions/checkout@v3
 
     # -------------------------
     # Set up Python
     # -------------------------
-    - name: Set up Python
-      uses: actions/setup-python@v4
+    - uses: actions/setup-python@v4
       with:
         python-version: "3.11"
 
@@ -37,48 +36,45 @@ jobs:
     # -------------------------
     # Set up R
     # -------------------------
-    - name: Set up R
-      uses: r-lib/actions/setup-r@v2
+    - uses: r-lib/actions/setup-r@v2
       with:
         use-public-rspm: true
 
-
     # -------------------------
-    # Install R packages
+    # Install system dependencies (needed for some R packages)
     # -------------------------
-    - name: Install system dependencies for devtools
+    - name: Install system dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev build-essential
+        sudo apt-get install -y \
+          libcurl4-openssl-dev \
+          libssl-dev \
+          libxml2-dev
 
+    # -------------------------
+    # Install R packages (NO devtools)
+    # -------------------------
     - name: Install R packages
       run: |
         Rscript -e '
-          dir.create(Sys.getenv("R_LIBS_USER"), recursive=TRUE, showWarnings=FALSE)
-          .libPaths(Sys.getenv("R_LIBS_USER"))
-          install.packages(c("dplyr","readr","devtools"), repos="https://cloud.r-project.org")
-          library(devtools)
-          devtools::install_github("Teamworksapp/smartabaseR")
+          install.packages(
+            c("dplyr", "readr", "remotes"),
+            repos = "https://cloud.r-project.org"
+          )
+          remotes::install_github("Teamworksapp/smartabaseR")
         '
+
+    # -------------------------
+    # Debug environment variables
+    # -------------------------
     - name: Debug environment variables
       run: |
-        echo "ID is set: ${ID:+YES}" 
+        echo "ID is set: ${ID:+YES}"
         echo "SHARED_SECRET is set: ${SHARED_SECRET:+YES}"
         echo "API_KEY is set: ${API_KEY:+YES}"
         echo "SB_USERNAME is set: ${SB_USERNAME:+YES}"
         echo "SB_PASSWORD is set: ${SB_PASSWORD:+YES}"
 
-    # -------------------------
-    # Cache R packages
-    # -------------------------
-    - name: Cache R packages
-      uses: actions/cache@v3
-      with:
-        path: ${{ env.R_LIBS_USER }}
-        key: ${{ runner.os }}-r-packages-${{ hashFiles('**/*.R') }}
-        restore-keys: |
-          ${{ runner.os }}-r-packages-
-        
     # -------------------------
     # Run Firstbeat pipeline
     # -------------------------
