@@ -62,7 +62,7 @@ jobs:
             c("dplyr", "readr", "remotes"),
             repos = "https://cloud.r-project.org"
           )
-          remotes::install_github("Teamworksapp/smartabaseR")
+          remotes::install_github("Teamworksapp/smartabaseR", ref = "main")
         '
 
     # -------------------------
