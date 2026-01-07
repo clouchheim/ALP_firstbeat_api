@@ -20,15 +20,19 @@ usss_athletes <- sb_get_user(
 )
 
 ##### Get all Firstbeat Data
+csv_path <- "firstbeat_data.csv"
 
+if (!file.exists(csv_path)) {
+  message("No firstbeat_data.csv found. Nothing to upload.")
+  quit(save = "no", status = 0)
+}
 
-#### using test csv right now
-DataUpload <- read_csv('firstbeat_data.csv', show_col_types = FALSE) 
+DataUpload <- read_csv(csv_path, show_col_types = FALSE)
 
-# if no data found, fail
 if (nrow(DataUpload) == 0) {
-  stop("DataUpload is empty. No rows found in firstbeat_data.csv.")
-} 
+  message("firstbeat_data.csv exists but contains no rows. Nothing to upload.")
+  quit(save = "no", status = 0)
+}
 
 DataUpload <- DataUpload %>%
   mutate(
@@ -53,6 +57,35 @@ DataUpload <- DataUpload %>%
     )
   )
 
+##### Remove duplicates
+
+# get past day of measuerment IDs to avoid duplicates
+past_measurements <- sb_get_event(
+  form = "Firstbeat Summary Stats",
+  date_range = sb_date_range("1", "days"),
+  url = "https://usopc.smartabase.com/athlete360-usss",
+  username = username,
+  password = password
+)
+
+past_ids <- character(0)
+
+if (!is.null(past_measurements) &&
+    nrow(past_measurements) > 0 &&
+    "ID" %in% names(past_measurements)) {
+  past_ids <- past_measurements$ID
+}
+
+DataUpload <- DataUpload %>%
+  filter(!ID %in% past_ids)
+
+if (nrow(DataUpload) == 0) {
+  message("All records are duplicates. Nothing to upload.")
+  quit(save = "no", status = 0)
+}
+
+print(DataUpload)
+
 ##### Create or Update event using Teamworks API
 sb_insert_event(
   df = DataUpload,
@@ -70,3 +103,4 @@ csv_path <- "firstbeat_data.csv"
 if (file.exists(csv_path)) {
   file.remove(csv_path)
 }
+print("Scuccessfully uploaded Firstbeat data and deleted local CSV.")
