@@ -36,10 +36,12 @@ if (nrow(DataUpload) == 0) {
 
 DataUpload <- DataUpload %>%
   mutate(
-    Date = as.Date(Date),
+    Date = as.Date(Date, format = "%m/%d/%Y"),
     start_time = format(strptime(start_time, "%H:%M:%S"), "%I:%M %p"),
-    end_time = format(strptime(end_time, "%H:%M:%S"), "%I:%M %p")
+    end_time   = format(strptime(end_time, "%H:%M:%S"), "%I:%M %p")
   )
+
+stopifnot(all(format(DataUpload$Date, "%Y") == "2026"))
 
 # format dates correclty
 DataUpload$start_time <- sub("^0", "", DataUpload$start_time)
@@ -56,6 +58,7 @@ DataUpload <- DataUpload %>%
       "Last Name"  = "last_name"
     )
   )
+
 
 ##### Remove duplicates
 
@@ -84,9 +87,11 @@ if (nrow(DataUpload) == 0) {
   quit(save = "no", status = 0)
 }
 
-print(DataUpload)
-
 ##### Create or Update event using Teamworks API
+
+DataUpload <- DataUpload %>%
+  select(-`First Name`, -`Last Name`)
+
 sb_insert_event(
   df = DataUpload,
   form = "Firstbeat Summary Stats",
@@ -100,7 +105,9 @@ sb_insert_event(
 
 ###### delete csv
 csv_path <- "firstbeat_data.csv"
+
 if (file.exists(csv_path)) {
   file.remove(csv_path)
 }
-print("Scuccessfully uploaded Firstbeat data and deleted local CSV.")
+
+print("Successfully uploaded Firstbeat data and deleted local CSV.")
