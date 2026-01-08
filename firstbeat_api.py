@@ -148,11 +148,11 @@ for athlete in athlete_w_measurements:
 
         # get variables
         try:
-            rmssd_value = resp['variables'][0]['value']
+            rmssd_value = resp['variables'][1]['value']
         except (IndexError, KeyError):
             rmssd_value = ""
         try:
-            acwr_value = resp['variables'][1]['value']
+            acwr_value = resp['variables'][0]['value']
         except (IndexError, KeyError):
             acwr_value = ""
 
