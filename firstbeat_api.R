@@ -36,15 +36,10 @@ if (nrow(DataUpload) == 0) {
 
 DataUpload <- DataUpload %>%
   mutate(
-    Date = as.Date(Date, format = "%m/%d/%Y"),
+    Date = as.Date(Date),
     start_time = format(strptime(start_time, "%H:%M:%S"), "%I:%M %p"),
-    end_time   = format(strptime(end_time, "%H:%M:%S"), "%I:%M %p")
+    end_time = format(strptime(end_time, "%H:%M:%S"), "%I:%M %p")
   )
-
-if (nrow(DataUpload) == 0) {
-  message("No 2026 records found. Nothing to upload.")
-  quit(save = "no", status = 0)
-}
 
 # format dates correclty
 DataUpload$start_time <- sub("^0", "", DataUpload$start_time)
@@ -60,16 +55,16 @@ DataUpload <- DataUpload %>%
       "First Name" = "first_name",
       "Last Name"  = "last_name"
     )
-  )
-
+  ) %>%
+  select(-c(`First Name`, `Last Name`, Date))
 
 ##### Remove duplicates
 
 # get past day of measuerment IDs to avoid duplicates
 past_measurements <- sb_get_event(
   form = "Firstbeat Summary Stats",
-  date_range = sb_date_range("1", "days"),
-  url = "https://usopc.smartabase.com/athlete360-usss",
+  date_range = sb_date_range("14", "days"),
+  url = "https://usopc.smartabase.com/athlete360-usss/",
   username = username,
   password = password
 )
@@ -83,26 +78,26 @@ if (!is.null(past_measurements) &&
 }
 
 DataUpload <- DataUpload %>%
-  filter(!ID %in% past_ids)
+  filter(!ID %in% past_ids, !is.na(user_id))
 
 if (nrow(DataUpload) == 0) {
   message("All records are duplicates. Nothing to upload.")
   quit(save = "no", status = 0)
 }
 
+DataUpload %>%
+  select(user_id, ID, `Session Type`, RMSSD, ACWR)
+
 ##### Create or Update event using Teamworks API
-
-DataUpload <- DataUpload %>%
-  select(-`First Name`, -`Last Name`)
-
 sb_insert_event(
   df = DataUpload,
   form = "Firstbeat Summary Stats",
-  url = "https://usopc.smartabase.com/athlete360-usss",
+  url = "https://usopc.smartabase.com/athlete360-usss/",
   username = username,
   password = password,
   option = sb_insert_event_option(
-    id_col = "user_id"
+    id_col = "user_id",
+    table_field = c("ID", "Session Type", "RMSSD", "ACWR")
   )
 )
 
@@ -112,5 +107,4 @@ csv_path <- "firstbeat_data.csv"
 if (file.exists(csv_path)) {
   file.remove(csv_path)
 }
-
-print("Successfully uploaded Firstbeat data and deleted local CSV.")
+print("Scuccessfully uploaded Firstbeat data and deleted local CSV.")
