@@ -107,10 +107,10 @@ sb_insert_event(
 )
 
 ###### delete csv
-#csv_path <- "firstbeat_data.csv"
+csv_path <- "firstbeat_data.csv"
 
-#if (file.exists(csv_path)) {
-  #file.remove(csv_path)
-#}
+if (file.exists(csv_path)) {
+  file.remove(csv_path)
+}
 
 print("Successfully uploaded Firstbeat data and deleted local CSV.")
