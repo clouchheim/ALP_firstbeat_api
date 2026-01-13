@@ -20,7 +20,7 @@ SHARED_SECRET = os.getenv("SHARED_SECRET")
 API_KEY = os.getenv("API_KEY")
 
 TEAM_ID = 20168 # all MALP and WALP on Firstbeat
-LAST_X_HOURS = 1 # just from time of run back 24 hours (NOTE: data must be loaded into firstbeat cloud) # last run at 8:30
+LAST_X_HOURS = 12 # just from time of run back 24 hours (NOTE: data must be loaded into firstbeat cloud) # last run at 8:30
 USSS_COACH_ID = '3-4925' # U.S. Ski and Snowboard id
 
 # IF missing correct infomration (probably in .env file, raise error)

@@ -41,10 +41,6 @@ DataUpload <- DataUpload %>%
     end_time   = format(strptime(end_time, "%H:%M:%S"), "%I:%M %p")
   )
 
-DataUpload <- DataUpload %>%
-  filter(!is.na(Date)) %>%
-  filter(format(Date, "%Y") == "2026")
-
 if (nrow(DataUpload) == 0) {
   message("No 2026 records found. Nothing to upload.")
   quit(save = "no", status = 0)
