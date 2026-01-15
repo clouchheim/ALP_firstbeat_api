@@ -167,8 +167,8 @@ for athlete in athlete_w_measurements:
             'Time': str(resp['endTime'].strftime("%I:%M %p").lstrip("0")),
             'ID':f'{measurement_id}-{athlete}' , 
             'Session Type': resp['measurementType'],
-            'RMSSD': rmssd_value, 
-            'ACWR': acwr_value
+            'RMSSD': acwr_value, # yes i know that these look flipped
+            'ACWR': rmssd_value
         }
         rmssd.append(session)
 
