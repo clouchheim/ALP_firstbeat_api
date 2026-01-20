@@ -1,0 +1,263 @@
+{
+  "more": false,
+  "athletes": [
+    {
+      "firstName": "AJ",
+      "lastName": "Hurt",
+      "email": "ajhurti26@gmail.com",
+      "athleteId": 562123
+    },
+    {
+      "firstName": "Dasha",
+      "lastName": "Romanov",
+      "email": "dashromanov@gmail.com",
+      "athleteId": 562126
+    },
+    {
+      "firstName": "River",
+      "lastName": "Radamus",
+      "email": "riverradamusllc@gmail.com",
+      "athleteId": 570111
+    },
+    {
+      "firstName": "Bridger",
+      "lastName": "Gile",
+      "email": "bridger.gile.vssa@gmail.com",
+      "athleteId": 570112
+    },
+    {
+      "firstName": "Isaiah",
+      "lastName": "Nelson",
+      "email": "nelson.isaiahj@gmail.com",
+      "athleteId": 570113
+    },
+    {
+      "firstName": "Jett",
+      "lastName": "Seymour",
+      "email": "jettskimore@gmail.com",
+      "athleteId": 570114
+    },
+    {
+      "firstName": "Ben",
+      "lastName": "Ritchie",
+      "email": "ben.ritchie00@gmail.com",
+      "athleteId": 570115
+    },
+    {
+      "firstName": "Luke",
+      "lastName": "Winters",
+      "email": "lukedwinters@gmail.com",
+      "athleteId": 570116
+    },
+    {
+      "firstName": "Tommy",
+      "lastName": "Ford",
+      "email": "ford.tommy@gmail.com",
+      "athleteId": 570117
+    },
+    {
+      "firstName": "Camden",
+      "lastName": "Palmquist",
+      "email": "camskibike@gmail.com",
+      "athleteId": 570118
+    },
+    {
+      "firstName": "Cooper",
+      "lastName": "Puckett",
+      "email": "cooperpuckett@icloud.com",
+      "athleteId": 570119
+    },
+    {
+      "firstName": "Finnigan",
+      "lastName": "Donley",
+      "email": "finnd907@gmail.com",
+      "athleteId": 570120
+    },
+    {
+      "firstName": "Stanley",
+      "lastName": "Buzek",
+      "email": "stanley.janusz.buzek@gmail.com",
+      "athleteId": 570121
+    },
+    {
+      "firstName": "Jack",
+      "lastName": "Smith",
+      "email": "jacksmithskier@gmail.com",
+      "athleteId": 570122
+    },
+    {
+      "firstName": "Jay",
+      "lastName": "Poulter",
+      "email": "jskiracer1@gmail.com",
+      "athleteId": 570123
+    },
+    {
+      "firstName": "Bryce",
+      "lastName": "Bennett",
+      "email": "b.bennett37@gmail.com",
+      "athleteId": 570124
+    },
+    {
+      "firstName": "Jared",
+      "lastName": "Goldberg",
+      "email": "jaredgoldberg1@gmail.com",
+      "athleteId": 570125
+    },
+    {
+      "firstName": "Kyle",
+      "lastName": "Negomir",
+      "email": "knegomir@gmail.com",
+      "athleteId": 570126
+    },
+    {
+      "firstName": "Ryan",
+      "lastName": "Cochran-Siegle",
+      "email": "rcsiegle92@gmail.com",
+      "athleteId": 570127
+    },
+    {
+      "firstName": "Sam",
+      "lastName": "Morse",
+      "email": "snowmorse@gmail.com",
+      "athleteId": 570129
+    },
+    {
+      "firstName": "Erik",
+      "lastName": "Arvidsson",
+      "email": "erik.arvidsson6@gmail.com",
+      "athleteId": 570131
+    },
+    {
+      "firstName": "Ryder",
+      "lastName": "Sarchett",
+      "email": "rydersarchett@gmail.com",
+      "athleteId": 570132
+    },
+    {
+      "firstName": "Nina",
+      "lastName": "O'Brien",
+      "email": "nina@obriensf.com",
+      "athleteId": 570261
+    },
+    {
+      "firstName": "Katie",
+      "lastName": "Hensien",
+      "email": "katieskiracer@hotmail.com",
+      "athleteId": 570262
+    },
+    {
+      "firstName": "Keely",
+      "lastName": "Cashman",
+      "email": "cashmanski@gmail.com",
+      "athleteId": 570263
+    },
+    {
+      "firstName": "Lauren",
+      "lastName": "Macuga",
+      "email": "lauren.macuga20@gmail.com",
+      "athleteId": 570265
+    },
+    {
+      "firstName": "Jacqueline",
+      "lastName": "Wiles",
+      "email": "jacquelinewiles@aol.com",
+      "athleteId": 570267
+    },
+    {
+      "firstName": "Isabella",
+      "lastName": "Wright",
+      "email": "bellawrightski@gmail.com",
+      "athleteId": 570268
+    },
+    {
+      "firstName": "Elisabeth",
+      "lastName": "Bocock",
+      "email": "elisabethbocock@icloud.com",
+      "athleteId": 570574
+    },
+    {
+      "firstName": "Allison",
+      "lastName": "Mollin",
+      "email": "allisongmollin@gmail.com",
+      "athleteId": 571476
+    },
+    {
+      "firstName": "Stella",
+      "lastName": "Johansson",
+      "email": "stellajoh9@gmail.com",
+      "athleteId": 571749
+    },
+    {
+      "firstName": "Liv",
+      "lastName": "Moritz",
+      "email": "livmoritz23@gmail.com",
+      "athleteId": 572061
+    },
+    {
+      "firstName": "Tatum",
+      "lastName": "Grosdidier",
+      "email": "tatumgrosdidier@icloud.com",
+      "athleteId": 573245
+    },
+    {
+      "firstName": "Per",
+      "lastName": "Lundstam",
+      "email": "per.lundstam@usskiandsnowboard.org",
+      "athleteId": 581448
+    },
+    {
+      "firstName": "John",
+      "lastName": "Kerbaugh",
+      "email": "jkerbaugh05@gmail.com",
+      "athleteId": 582103
+    },
+    {
+      "firstName": "Jevin",
+      "lastName": "Palmquist",
+      "email": "jevin.palmquist19@gmail.com",
+      "athleteId": 582130
+    },
+    {
+      "firstName": "Hunter",
+      "lastName": "Salani",
+      "email": "huntersalani@gmail.com",
+      "athleteId": 582132
+    },
+    {
+      "firstName": "Ava",
+      "lastName": "Sunshine Jemison",
+      "email": "avajemis@gmail.com",
+      "athleteId": 584178
+    },
+    {
+      "firstName": "Athlete 1.",
+      "lastName": "Athlete 1.",
+      "email": "bob.poehling@usskiandsnowboard.org",
+      "athleteId": 591098
+    },
+    {
+      "firstName": "Athlete 2.",
+      "lastName": "Athlete 2.",
+      "email": "per.lundstam@usskiandsnowboard.org",
+      "athleteId": 591099
+    },
+    {
+      "firstName": "Athlete 3.",
+      "lastName": "Athlete 3.",
+      "email": "per.lundstam@usskiandsnowboard.org",
+      "athleteId": 591100
+    },
+    {
+      "firstName": "Athlete 4.",
+      "lastName": "Athlete 4.",
+      "email": "per.lundstam@usskiandsnowboard.org",
+      "athleteId": 591101
+    },
+    {
+      "firstName": "Michael",
+      "lastName": "Rheese",
+      "email": "michael.rheese@usskiandsnowboard.org",
+      "athleteId": 598770
+    }
+  ]
+}
