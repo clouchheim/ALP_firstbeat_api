@@ -5,6 +5,7 @@ from tqdm import tqdm
 import pandas as pd
 import requests
 from dotenv import load_dotenv
+from teamworks_api import upload_firstbeat_dataframe
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
@@ -186,3 +187,6 @@ else:
 print(f"CSV written to {csv_path} with {len(rmssd)} rows")
 
 print("\n=== DONE WITH FIRSTBEAT API===\n")
+
+print("Uploading Firstbeat data to Smartabase... using the teamworks_api module.\n")
+upload_firstbeat_dataframe(df)
