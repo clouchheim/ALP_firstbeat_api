@@ -1,14 +1,14 @@
 import os
-import sys
 import requests
 import pandas as pd
+from dotenv import load_dotenv
 from requests.auth import HTTPBasicAuth
 
 # =========================
 # ENV / CONSTANTS
 # =========================
-
-SB_BASE_URL = os.getenv("SB_BASE_URL", "https://usopc.smartabase.com/athlete360-usss/")
+load_dotenv()
+SB_BASE_URL = os.getenv("SB_BASE_URL", "https://server.smartabase.com/site")
 SB_USERNAME = os.getenv("SB_USERNAME")
 SB_PASSWORD = os.getenv("SB_PASSWORD")
 SB_APP_ID   = os.getenv("SB_APP_ID", "firstbeat-sync")
@@ -33,35 +33,48 @@ def _sb_auth():
     return HTTPBasicAuth(SB_USERNAME, SB_PASSWORD)
 
 # =========================
-# USERS
+# USERS (CORRECT ENDPOINT)
 # =========================
 
 def get_usss_user_map():
     """
+    Uses /usersynchronise to retrieve all accessible users.
+
     Returns:
-        dict keyed by (first_name, last_name) -> user_id
+        dict[(first_name, last_name)] -> user_id
     """
-    url = f"{SB_BASE_URL}/api/v1/users?informat=json&format=json"
+    url = f"{SB_BASE_URL}/api/v1/usersynchronise?informat=json&format=json"
 
     payload = {
-        "groups": ["U.S. Ski & Snowboard Athletes"]
+        "lastSynchronisationTimeOnServer": 0,
+        "paginate": True
     }
 
-    r = requests.post(
-        url,
-        headers=_sb_headers(),
-        auth=_sb_auth(),
-        json=payload,
-        timeout=30
-    )
-    r.raise_for_status()
+    user_map = {}
 
-    users = r.json().get("users", [])
+    while True:
+        r = requests.post(
+            url,
+            headers=_sb_headers(),
+            auth=_sb_auth(),
+            json=payload,
+            timeout=60
+        )
+        r.raise_for_status()
+        data = r.json()
 
-    return {
-        (u["firstName"].strip(), u["lastName"].strip()): u["id"]
-        for u in users
-    }
+        users = data.get("users", [])
+        for u in users:
+            key = (u["firstName"].strip(), u["lastName"].strip())
+            user_map[key] = u["userId"]
+
+        cursor = data.get("nextCursor")
+        if not cursor:
+            break
+
+        payload["cursor"] = cursor
+
+    return user_map
 
 # =========================
 # EXISTING EVENTS (DEDUP)
@@ -104,11 +117,11 @@ def get_existing_measurement_ids(user_ids):
                     if pair.get("key") == "ID":
                         existing_ids.add(pair.get("value"))
 
-        next_cursor = data.get("export", {}).get("nextCursor")
-        if not next_cursor:
+        cursor = data.get("export", {}).get("nextCursor")
+        if not cursor:
             break
 
-        payload["cursor"] = next_cursor
+        payload["cursor"] = cursor
 
     return existing_ids
 
@@ -123,17 +136,15 @@ def _build_event_payload(row):
         "startTime": row["start_time"],
         "finishDate": row["end_date"],
         "finishTime": row["end_time"],
-        "userId": {
-            "userId": int(row["user_id"])
-        },
+        "userId": {"userId": int(row["user_id"])},
         "rows": [
             {
                 "row": 0,
                 "pairs": [
                     {"key": "ID", "value": row["ID"]},
                     {"key": "Session Type", "value": row["Session Type"]},
-                    {"key": "RMSSD", "value": str(row["RMSSD"])},
-                    {"key": "ACWR", "value": str(row["ACWR"])}
+                    {"key": "ACWR", "value": str(row["RMSSD"])}, # yes i know that these look flipped
+                    {"key": "RMSSD", "value": str(row["ACWR"])}
                 ]
             }
         ]
@@ -147,20 +158,9 @@ def upload_firstbeat_dataframe(df: pd.DataFrame, verbose: bool = True) -> int:
     """
     Uploads Firstbeat data into Smartabase.
 
-    Required columns in df:
-        - First Name
-        - Last Name
-        - start_date
-        - start_time
-        - end_date
-        - end_time
-        - ID
-        - Session Type
-        - RMSSD
-        - ACWR
-
-    Returns:
-        int: number of events successfully uploaded
+    Required columns:
+        First Name, Last Name, start_date, start_time,
+        end_date, end_time, ID, Session Type, RMSSD, ACWR
     """
 
     if df.empty:

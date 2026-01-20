@@ -21,7 +21,7 @@ SHARED_SECRET = os.getenv("SHARED_SECRET")
 API_KEY = os.getenv("API_KEY")
 
 TEAM_ID = 20168 # all MALP and WALP on Firstbeat
-LAST_X_HOURS = 6 # looks back 6 hours but runs every hour, removes duplicates in R script
+LAST_X_HOURS = 24 # looks back 6 hours but runs every hour, removes duplicates in R script
 USSS_COACH_ID = '3-4925' # U.S. Ski and Snowboard id
 
 # IF missing correct infomration (probably in .env file, raise error)
@@ -183,11 +183,11 @@ if len(rmssd) == 0:
 else:
     df = pd.DataFrame(rmssd)
     df.to_csv(csv_path, index=False)
+    print("Uploading Firstbeat data to Smartabase... using the teamworks_api module.\n")
+    upload_firstbeat_dataframe(df)
 
 print(f"CSV written to {csv_path} with {len(rmssd)} rows")
 
 print("\n=== DONE WITH FIRSTBEAT API===\n")
 
 
-print("Uploading Firstbeat data to Smartabase... using the teamworks_api module.\n")
-upload_firstbeat_dataframe(df)
