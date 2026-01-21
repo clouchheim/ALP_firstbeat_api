@@ -21,7 +21,7 @@ SHARED_SECRET = os.getenv("SHARED_SECRET")
 API_KEY = os.getenv("API_KEY")
 
 TEAM_ID = 20168 # all MALP and WALP on Firstbeat
-LAST_X_HOURS = 6 # looks back 6 hours but runs every hour, removes duplicates in R script
+LAST_X_HOURS = 12 # looks back 6 hours but runs every hour, removes duplicates in R script
 USSS_COACH_ID = '3-4925' # U.S. Ski and Snowboard id
 
 # IF missing correct infomration (probably in .env file, raise error)
