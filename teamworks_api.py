@@ -32,10 +32,10 @@ Required Args for the data_upload function:
 def _build_event_payload(row, form_name):
     return {
         "formName": form_name,
-        "startDate": row["start_date"],
-        "startTime": row["start_time"],
-        "finishDate": row["end_date"],
-        "finishTime": row["end_time"],
+        "startDate": row.get("start_date", pd.Timestamp.now().strftime("%d/%m/%Y")),
+        "startTime": row.get("start_time", ""),
+        "finishDate": row.get("end_date", pd.Timestamp.now().strftime("%d/%m/%Y")),
+        "finishTime": row.get("end_time", ""),
         "userId": {"userId": int(row["user_id"])},
         "rows": [
             {
