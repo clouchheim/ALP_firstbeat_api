@@ -15,7 +15,6 @@ jobs:
       SB_BASE_URL: ${{ secrets.SB_BASE_URL }}     # only if you set it; otherwise your default is used
       SB_USERNAME: ${{ secrets.SB_USERNAME }}
       SB_PASSWORD: ${{ secrets.SB_PASSWORD }}
-      SB_APP_ID: ${{ secrets.SB_APP_ID }}         # optional; only if you set it
 
     steps:
       - name: Checkout repo
