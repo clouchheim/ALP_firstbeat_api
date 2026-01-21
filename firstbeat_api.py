@@ -174,19 +174,19 @@ for athlete in athlete_w_measurements:
         rmssd.append(session)
 
 df = pd.DataFrame(rmssd)
-csv_path = os.path.join(os.getcwd(), "firstbeat_data.csv")
+#csv_path = os.path.join(os.getcwd(), "firstbeat_data.csv")
 
 if len(rmssd) == 0:
-    print("WARNING: No measurement data found, CSV will be empty.")
+    print("WARNING: No measurement data found, no upload.")
     # still create CSV so workflow doesn't fail at -f check
-    pd.DataFrame([]).to_csv(csv_path, index=False)
+    #pd.DataFrame([]).to_csv(csv_path, index=False)
 else:
     df = pd.DataFrame(rmssd)
-    df.to_csv(csv_path, index=False)
+    #df.to_csv(csv_path, index=False)
     print("Uploading Firstbeat data to Smartabase... using the teamworks_api module.\n")
     upload_firstbeat_dataframe(df)
 
-print(f"CSV written to {csv_path} with {len(rmssd)} rows")
+#print(f"CSV written to {csv_path} with {len(rmssd)} rows")
 
 print("\n=== DONE WITH FIRSTBEAT API===\n")
 
