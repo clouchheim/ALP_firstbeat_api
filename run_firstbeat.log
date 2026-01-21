@@ -1,685 +1,0 @@
-python3: can't open file '/Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api/Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api/firstbeat_api.py': [Errno 2] No such file or directory
-Fatal error: cannot open file 'Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api/firstbeat_api.R': No such file or directory
-Found 43 athletes
-Fetching Athlete Sessions:   0%|          | 0/43 [00:00<?, ?it/s]Fetching Athlete Sessions:   2%|▏         | 1/43 [00:00<00:23,  1.77it/s]Fetching Athlete Sessions:   5%|▍         | 2/43 [00:01<00:22,  1.79it/s]Fetching Athlete Sessions:   7%|▋         | 3/43 [00:01<00:22,  1.82it/s]Fetching Athlete Sessions:   9%|▉         | 4/43 [00:02<00:21,  1.77it/s]Fetching Athlete Sessions:  12%|█▏        | 5/43 [00:02<00:21,  1.79it/s]Fetching Athlete Sessions:  14%|█▍        | 6/43 [00:03<00:20,  1.82it/s]Fetching Athlete Sessions:  16%|█▋        | 7/43 [00:03<00:19,  1.84it/s]Fetching Athlete Sessions:  19%|█▊        | 8/43 [00:04<00:19,  1.84it/s]Fetching Athlete Sessions:  21%|██        | 9/43 [00:04<00:18,  1.82it/s]Fetching Athlete Sessions:  23%|██▎       | 10/43 [00:05<00:18,  1.83it/s]Fetching Athlete Sessions:  26%|██▌       | 11/43 [00:06<00:17,  1.79it/s]Fetching Athlete Sessions:  28%|██▊       | 12/43 [00:06<00:17,  1.82it/s]Fetching Athlete Sessions:  30%|███       | 13/43 [00:07<00:16,  1.85it/s]Fetching Athlete Sessions:  33%|███▎      | 14/43 [00:07<00:17,  1.67it/s]Fetching Athlete Sessions:  35%|███▍      | 15/43 [00:08<00:16,  1.69it/s]Fetching Athlete Sessions:  37%|███▋      | 16/43 [00:08<00:15,  1.77it/s]Fetching Athlete Sessions:  40%|███▉      | 17/43 [00:09<00:16,  1.56it/s]Fetching Athlete Sessions:  42%|████▏     | 18/43 [00:10<00:15,  1.63it/s]Fetching Athlete Sessions:  44%|████▍     | 19/43 [00:10<00:14,  1.70it/s]Fetching Athlete Sessions:  47%|████▋     | 20/43 [00:11<00:13,  1.75it/s]Fetching Athlete Sessions:  49%|████▉     | 21/43 [00:11<00:12,  1.80it/s]Fetching Athlete Sessions:  51%|█████     | 22/43 [00:12<00:11,  1.81it/s]Fetching Athlete Sessions:  53%|█████▎    | 23/43 [00:12<00:10,  1.82it/s]Fetching Athlete Sessions:  56%|█████▌    | 24/43 [00:13<00:10,  1.83it/s]Fetching Athlete Sessions:  58%|█████▊    | 25/43 [00:14<00:09,  1.84it/s]Fetching Athlete Sessions:  60%|██████    | 26/43 [00:14<00:09,  1.83it/s]Fetching Athlete Sessions:  63%|██████▎   | 27/43 [00:15<00:08,  1.86it/s]Fetching Athlete Sessions:  65%|██████▌   | 28/43 [00:15<00:08,  1.85it/s]Fetching Athlete Sessions:  67%|██████▋   | 29/43 [00:16<00:07,  1.86it/s]Fetching Athlete Sessions:  70%|██████▉   | 30/43 [00:16<00:06,  1.87it/s]Fetching Athlete Sessions:  72%|███████▏  | 31/43 [00:17<00:06,  1.88it/s]Fetching Athlete Sessions:  74%|███████▍  | 32/43 [00:17<00:05,  1.86it/s]Fetching Athlete Sessions:  77%|███████▋  | 33/43 [00:18<00:05,  1.86it/s]Fetching Athlete Sessions:  79%|███████▉  | 34/43 [00:18<00:04,  1.85it/s]Fetching Athlete Sessions:  81%|████████▏ | 35/43 [00:19<00:04,  1.84it/s]Fetching Athlete Sessions:  84%|████████▎ | 36/43 [00:20<00:03,  1.82it/s]Fetching Athlete Sessions:  86%|████████▌ | 37/43 [00:20<00:03,  1.81it/s]Fetching Athlete Sessions:  88%|████████▊ | 38/43 [00:21<00:02,  1.81it/s]Fetching Athlete Sessions:  91%|█████████ | 39/43 [00:21<00:02,  1.77it/s]Fetching Athlete Sessions:  93%|█████████▎| 40/43 [00:22<00:01,  1.76it/s]Fetching Athlete Sessions:  95%|█████████▌| 41/43 [00:22<00:01,  1.74it/s]Fetching Athlete Sessions:  98%|█████████▊| 42/43 [00:23<00:00,  1.77it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:24<00:00,  1.76it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:24<00:00,  1.79it/s]
---- Getting Measurements for Katie Hensien ---
-2025-12-16 18:39:48
-ID: 14835911-570262
-Time: 2025-12-16 18:39:48
-Type: exercise 
-RMSSD: 1.526418540531827
-ACWR: 15.1846390284506
-
-   start_date start_time    end_date  ... Session Type     RMSSD       ACWR
-0  16/12/2025    5:53 PM  16/12/2025  ...     exercise  1.526419  15.184639
-
-[1 rows x 12 columns]
-
-=== DONE WITH FIRSTBEAT API===
-
-
-Attaching package: ‘dplyr’
-
-The following objects are masked from ‘package:stats’:
-
-    filter, lag
-
-The following objects are masked from ‘package:base’:
-
-    intersect, setdiff, setequal, union
-
-── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ forcats   1.0.1     ✔ readr     2.1.5
-✔ ggplot2   4.0.0     ✔ stringr   1.5.2
-✔ lubridate 1.9.4     ✔ tibble    3.3.0
-✔ purrr     1.1.0     ✔ tidyr     1.3.1
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
-Attaching package: ‘zoo’
-
-The following objects are masked from ‘package:base’:
-
-    as.Date, as.Date.numeric
-
-Requesting user data from Smartabase...
-Wrangling user data from Smartabase...
-✔ User details export successful.
-New names:
-• `` -> `...1`
-Logging carter.louchheim into https://usopc.smartabase.com/athlete360-usss...
-✔ Successfully logged carter.louchheim into https://usopc.smartabase.com/athlete360-usss.
-INSERTING 1 record into Firstbeat Summary Stats over 1 calls to the Smartabase …
-INSERTING 1 new record into Firstbeat Summary Stats...
-✔ SUCCESSFULLY_INSERTED: 1 out of 1 records successfully inserted into Firstbeat Summary Stats.
-! The following fields do not exist in Firstbeat Summary Stats and were not imported:
-  ! Date
-  ! Time
-ℹ Form: Firstbeat Summary Stats
-ℹ Import result: SUCCESSFULLY_IMPORTED
-ℹ Records succesfully imported: 1
-ℹ Records attempted imported: 1
-ℹ Total API calls: 1
-# A tibble: 1 × 17
-  start_date start_time end_date end_time Date  Time  ID    `Session Type` RMSSD
-  <chr>      <chr>      <chr>    <chr>    <chr> <chr> <chr> <chr>          <chr>
-1 16/12/2025 5:53 PM    16/12/2… 6:39 PM  FIEL… FIEL… 1483… exercise       1.52…
-# ℹ 8 more variables: ACWR <chr>, user_id <chr>, form <chr>,
-#   entered_by_user_id <int>, import_action <chr>, import_result <chr>,
-#   api_call_index <int>, import_time <dbl>
-Warning message:
-In .remove_protected_column_names(.) :
-  'First Name' and 'Last Name' are protected names and will be removed from the dataset
-[1] TRUE
-Found 43 athletes
-Fetching Athlete Sessions:   0%|          | 0/43 [00:00<?, ?it/s]Fetching Athlete Sessions:   2%|▏         | 1/43 [00:00<00:25,  1.66it/s]Fetching Athlete Sessions:   5%|▍         | 2/43 [00:01<00:24,  1.71it/s]Fetching Athlete Sessions:   7%|▋         | 3/43 [00:01<00:23,  1.71it/s]Fetching Athlete Sessions:   9%|▉         | 4/43 [00:02<00:22,  1.75it/s]Fetching Athlete Sessions:  12%|█▏        | 5/43 [00:02<00:21,  1.78it/s]Fetching Athlete Sessions:  14%|█▍        | 6/43 [00:03<00:20,  1.79it/s]Fetching Athlete Sessions:  16%|█▋        | 7/43 [00:03<00:19,  1.80it/s]Fetching Athlete Sessions:  19%|█▊        | 8/43 [00:04<00:19,  1.83it/s]Fetching Athlete Sessions:  21%|██        | 9/43 [00:05<00:18,  1.81it/s]Fetching Athlete Sessions:  23%|██▎       | 10/43 [00:05<00:18,  1.81it/s]Fetching Athlete Sessions:  26%|██▌       | 11/43 [00:06<00:17,  1.81it/s]Fetching Athlete Sessions:  28%|██▊       | 12/43 [00:06<00:17,  1.79it/s]Fetching Athlete Sessions:  30%|███       | 13/43 [00:07<00:16,  1.78it/s]Fetching Athlete Sessions:  33%|███▎      | 14/43 [00:07<00:16,  1.78it/s]Fetching Athlete Sessions:  35%|███▍      | 15/43 [00:08<00:15,  1.80it/s]Fetching Athlete Sessions:  37%|███▋      | 16/43 [00:08<00:14,  1.81it/s]Fetching Athlete Sessions:  40%|███▉      | 17/43 [00:09<00:14,  1.82it/s]Fetching Athlete Sessions:  42%|████▏     | 18/43 [00:10<00:13,  1.82it/s]Fetching Athlete Sessions:  44%|████▍     | 19/43 [00:10<00:14,  1.67it/s]Fetching Athlete Sessions:  47%|████▋     | 20/43 [00:11<00:13,  1.70it/s]Fetching Athlete Sessions:  49%|████▉     | 21/43 [00:11<00:12,  1.73it/s]Fetching Athlete Sessions:  51%|█████     | 22/43 [00:12<00:11,  1.76it/s]Fetching Athlete Sessions:  53%|█████▎    | 23/43 [00:12<00:11,  1.76it/s]Fetching Athlete Sessions:  56%|█████▌    | 24/43 [00:13<00:11,  1.70it/s]Fetching Athlete Sessions:  58%|█████▊    | 25/43 [00:14<00:10,  1.73it/s]Fetching Athlete Sessions:  60%|██████    | 26/43 [00:14<00:09,  1.76it/s]Fetching Athlete Sessions:  63%|██████▎   | 27/43 [00:15<00:08,  1.79it/s]Fetching Athlete Sessions:  65%|██████▌   | 28/43 [00:15<00:08,  1.80it/s]Fetching Athlete Sessions:  67%|██████▋   | 29/43 [00:16<00:07,  1.77it/s]Fetching Athlete Sessions:  70%|██████▉   | 30/43 [00:16<00:07,  1.81it/s]Fetching Athlete Sessions:  72%|███████▏  | 31/43 [00:17<00:06,  1.83it/s]Fetching Athlete Sessions:  74%|███████▍  | 32/43 [00:17<00:06,  1.82it/s]Fetching Athlete Sessions:  77%|███████▋  | 33/43 [00:18<00:05,  1.68it/s]Fetching Athlete Sessions:  79%|███████▉  | 34/43 [00:19<00:05,  1.75it/s]Fetching Athlete Sessions:  81%|████████▏ | 35/43 [00:19<00:04,  1.69it/s]Fetching Athlete Sessions:  84%|████████▎ | 36/43 [00:20<00:04,  1.75it/s]Fetching Athlete Sessions:  86%|████████▌ | 37/43 [00:20<00:03,  1.78it/s]Fetching Athlete Sessions:  88%|████████▊ | 38/43 [00:21<00:02,  1.76it/s]Fetching Athlete Sessions:  91%|█████████ | 39/43 [00:22<00:02,  1.76it/s]Fetching Athlete Sessions:  93%|█████████▎| 40/43 [00:22<00:01,  1.79it/s]Fetching Athlete Sessions:  95%|█████████▌| 41/43 [00:23<00:01,  1.81it/s]Fetching Athlete Sessions:  98%|█████████▊| 42/43 [00:23<00:00,  1.80it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:24<00:00,  1.81it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:24<00:00,  1.77it/s]
---- Getting Measurements for AJ Hurt ---
-2025-11-18 10:31:30
-ID: 14709255-562123
-Time: 2025-11-18 10:31:30
-Type: exercise 
-RMSSD: 1.21454513591538
-ACWR: 8.59683649307722
-
-2025-11-19 12:59:55
-ID: 14710759-562123
-Time: 2025-11-19 12:59:55
-Type: exercise 
-RMSSD: 1.126783230210057
-ACWR: 2.795401587058824
-
-2025-11-20 07:04:09
-Traceback (most recent call last):
-  File "/Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api/firstbeat_api.py", line 147, in <module>
-    print(f"ID: {measurement_id}-{athlete}\nTime: {resp['endTime']}\nType: {resp['measurementType']} \nRMSSD: {resp['variables'][0]['value']}\nACWR: {resp['variables'][1]['value']}\n")
-                                                                                                                                                      ~~~~~~~~~~~~~~~~~^^^
-IndexError: list index out of range
-
-Attaching package: ‘dplyr’
-
-The following objects are masked from ‘package:stats’:
-
-    filter, lag
-
-The following objects are masked from ‘package:base’:
-
-    intersect, setdiff, setequal, union
-
-── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ forcats   1.0.1     ✔ readr     2.1.5
-✔ ggplot2   4.0.0     ✔ stringr   1.5.2
-✔ lubridate 1.9.4     ✔ tibble    3.3.0
-✔ purrr     1.1.0     ✔ tidyr     1.3.1
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
-Attaching package: ‘zoo’
-
-The following objects are masked from ‘package:base’:
-
-    as.Date, as.Date.numeric
-
-Requesting user data from Smartabase...
-Wrangling user data from Smartabase...
-✔ User details export successful.
-Error: 'firstbeat_data.csv' does not exist in current working directory ('/Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api').
-Execution halted
-Found 43 athletes
-Fetching Athlete Sessions:   0%|          | 0/43 [00:00<?, ?it/s]Fetching Athlete Sessions:   2%|▏         | 1/43 [00:00<00:31,  1.33it/s]Fetching Athlete Sessions:   5%|▍         | 2/43 [00:01<00:26,  1.52it/s]Fetching Athlete Sessions:   7%|▋         | 3/43 [00:01<00:25,  1.57it/s]Fetching Athlete Sessions:   9%|▉         | 4/43 [00:02<00:23,  1.63it/s]Fetching Athlete Sessions:  12%|█▏        | 5/43 [00:03<00:22,  1.68it/s]Fetching Athlete Sessions:  14%|█▍        | 6/43 [00:03<00:21,  1.73it/s]Fetching Athlete Sessions:  16%|█▋        | 7/43 [00:04<00:20,  1.75it/s]Fetching Athlete Sessions:  19%|█▊        | 8/43 [00:04<00:19,  1.76it/s]Fetching Athlete Sessions:  21%|██        | 9/43 [00:05<00:21,  1.59it/s]Fetching Athlete Sessions:  23%|██▎       | 10/43 [00:06<00:19,  1.67it/s]Fetching Athlete Sessions:  26%|██▌       | 11/43 [00:06<00:18,  1.71it/s]Fetching Athlete Sessions:  28%|██▊       | 12/43 [00:07<00:18,  1.72it/s]Fetching Athlete Sessions:  30%|███       | 13/43 [00:07<00:17,  1.75it/s]Fetching Athlete Sessions:  33%|███▎      | 14/43 [00:08<00:16,  1.74it/s]Fetching Athlete Sessions:  35%|███▍      | 15/43 [00:08<00:16,  1.74it/s]Fetching Athlete Sessions:  37%|███▋      | 16/43 [00:09<00:15,  1.75it/s]Fetching Athlete Sessions:  40%|███▉      | 17/43 [00:10<00:14,  1.77it/s]Fetching Athlete Sessions:  42%|████▏     | 18/43 [00:10<00:13,  1.80it/s]Fetching Athlete Sessions:  44%|████▍     | 19/43 [00:11<00:13,  1.78it/s]Fetching Athlete Sessions:  47%|████▋     | 20/43 [00:11<00:12,  1.81it/s]Fetching Athlete Sessions:  49%|████▉     | 21/43 [00:12<00:12,  1.79it/s]Fetching Athlete Sessions:  51%|█████     | 22/43 [00:12<00:12,  1.73it/s]Fetching Athlete Sessions:  53%|█████▎    | 23/43 [00:13<00:11,  1.77it/s]Fetching Athlete Sessions:  56%|█████▌    | 24/43 [00:13<00:10,  1.79it/s]Fetching Athlete Sessions:  58%|█████▊    | 25/43 [00:14<00:09,  1.81it/s]Fetching Athlete Sessions:  60%|██████    | 26/43 [00:15<00:09,  1.81it/s]Fetching Athlete Sessions:  63%|██████▎   | 27/43 [00:15<00:08,  1.79it/s]Fetching Athlete Sessions:  65%|██████▌   | 28/43 [00:16<00:08,  1.77it/s]Fetching Athlete Sessions:  67%|██████▋   | 29/43 [00:16<00:07,  1.79it/s]Fetching Athlete Sessions:  70%|██████▉   | 30/43 [00:17<00:07,  1.80it/s]Fetching Athlete Sessions:  72%|███████▏  | 31/43 [00:17<00:06,  1.77it/s]Fetching Athlete Sessions:  74%|███████▍  | 32/43 [00:18<00:06,  1.75it/s]Fetching Athlete Sessions:  77%|███████▋  | 33/43 [00:18<00:05,  1.77it/s]Fetching Athlete Sessions:  79%|███████▉  | 34/43 [00:19<00:05,  1.77it/s]Fetching Athlete Sessions:  81%|████████▏ | 35/43 [00:20<00:04,  1.78it/s]Fetching Athlete Sessions:  84%|████████▎ | 36/43 [00:20<00:03,  1.76it/s]Fetching Athlete Sessions:  86%|████████▌ | 37/43 [00:21<00:03,  1.77it/s]Fetching Athlete Sessions:  88%|████████▊ | 38/43 [00:21<00:02,  1.79it/s]Fetching Athlete Sessions:  91%|█████████ | 39/43 [00:22<00:02,  1.79it/s]Fetching Athlete Sessions:  93%|█████████▎| 40/43 [00:22<00:01,  1.77it/s]Fetching Athlete Sessions:  95%|█████████▌| 41/43 [00:23<00:01,  1.81it/s]Fetching Athlete Sessions:  98%|█████████▊| 42/43 [00:24<00:00,  1.78it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:24<00:00,  1.81it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:24<00:00,  1.75it/s]
---- Getting Measurements for AJ Hurt ---
-2025-11-18 10:31:30
-2025-11-19 12:59:55
-2025-11-20 07:04:09
-Traceback (most recent call last):
-  File "/Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api/firstbeat_api.py", line 171, in <module>
-    'ACWR': resp['variables'][1]['value']
-            ~~~~~~~~~~~~~~~~~^^^
-IndexError: list index out of range
-
-Attaching package: ‘dplyr’
-
-The following objects are masked from ‘package:stats’:
-
-    filter, lag
-
-The following objects are masked from ‘package:base’:
-
-    intersect, setdiff, setequal, union
-
-── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ forcats   1.0.1     ✔ readr     2.1.5
-✔ ggplot2   4.0.0     ✔ stringr   1.5.2
-✔ lubridate 1.9.4     ✔ tibble    3.3.0
-✔ purrr     1.1.0     ✔ tidyr     1.3.1
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
-Attaching package: ‘zoo’
-
-The following objects are masked from ‘package:base’:
-
-    as.Date, as.Date.numeric
-
-Requesting user data from Smartabase...
-Wrangling user data from Smartabase...
-✔ User details export successful.
-Error: 'firstbeat_data.csv' does not exist in current working directory ('/Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api').
-Execution halted
-Found 43 athletes
-Fetching Athlete Sessions:   0%|          | 0/43 [00:00<?, ?it/s]Fetching Athlete Sessions:   2%|▏         | 1/43 [00:00<00:23,  1.77it/s]Fetching Athlete Sessions:   5%|▍         | 2/43 [00:01<00:23,  1.78it/s]Fetching Athlete Sessions:   7%|▋         | 3/43 [00:01<00:22,  1.78it/s]Fetching Athlete Sessions:   9%|▉         | 4/43 [00:02<00:21,  1.80it/s]Fetching Athlete Sessions:  12%|█▏        | 5/43 [00:02<00:20,  1.84it/s]Fetching Athlete Sessions:  14%|█▍        | 6/43 [00:03<00:20,  1.82it/s]Fetching Athlete Sessions:  16%|█▋        | 7/43 [00:03<00:19,  1.85it/s]Fetching Athlete Sessions:  19%|█▊        | 8/43 [00:04<00:18,  1.87it/s]Fetching Athlete Sessions:  21%|██        | 9/43 [00:04<00:17,  1.90it/s]Fetching Athlete Sessions:  23%|██▎       | 10/43 [00:05<00:19,  1.73it/s]Fetching Athlete Sessions:  26%|██▌       | 11/43 [00:06<00:18,  1.77it/s]Fetching Athlete Sessions:  28%|██▊       | 12/43 [00:06<00:17,  1.82it/s]Fetching Athlete Sessions:  30%|███       | 13/43 [00:07<00:16,  1.82it/s]Fetching Athlete Sessions:  33%|███▎      | 14/43 [00:07<00:15,  1.83it/s]Fetching Athlete Sessions:  35%|███▍      | 15/43 [00:08<00:15,  1.82it/s]Fetching Athlete Sessions:  37%|███▋      | 16/43 [00:08<00:14,  1.84it/s]Fetching Athlete Sessions:  40%|███▉      | 17/43 [00:09<00:14,  1.83it/s]Fetching Athlete Sessions:  42%|████▏     | 18/43 [00:09<00:13,  1.83it/s]Fetching Athlete Sessions:  44%|████▍     | 19/43 [00:10<00:14,  1.65it/s]Fetching Athlete Sessions:  47%|████▋     | 20/43 [00:11<00:13,  1.70it/s]Fetching Athlete Sessions:  49%|████▉     | 21/43 [00:11<00:12,  1.73it/s]Fetching Athlete Sessions:  51%|█████     | 22/43 [00:12<00:12,  1.74it/s]Fetching Athlete Sessions:  53%|█████▎    | 23/43 [00:12<00:11,  1.79it/s]Fetching Athlete Sessions:  56%|█████▌    | 24/43 [00:13<00:10,  1.81it/s]Fetching Athlete Sessions:  58%|█████▊    | 25/43 [00:13<00:09,  1.83it/s]Fetching Athlete Sessions:  60%|██████    | 26/43 [00:14<00:09,  1.83it/s]Fetching Athlete Sessions:  63%|██████▎   | 27/43 [00:14<00:08,  1.84it/s]Fetching Athlete Sessions:  65%|██████▌   | 28/43 [00:15<00:08,  1.85it/s]Fetching Athlete Sessions:  67%|██████▋   | 29/43 [00:16<00:07,  1.86it/s]Fetching Athlete Sessions:  70%|██████▉   | 30/43 [00:16<00:06,  1.87it/s]Fetching Athlete Sessions:  72%|███████▏  | 31/43 [00:17<00:06,  1.89it/s]Fetching Athlete Sessions:  74%|███████▍  | 32/43 [00:17<00:06,  1.79it/s]Fetching Athlete Sessions:  77%|███████▋  | 33/43 [00:18<00:05,  1.69it/s]Fetching Athlete Sessions:  79%|███████▉  | 34/43 [00:18<00:05,  1.76it/s]Fetching Athlete Sessions:  81%|████████▏ | 35/43 [00:19<00:04,  1.77it/s]Fetching Athlete Sessions:  84%|████████▎ | 36/43 [00:20<00:03,  1.76it/s]Fetching Athlete Sessions:  86%|████████▌ | 37/43 [00:20<00:03,  1.80it/s]Fetching Athlete Sessions:  88%|████████▊ | 38/43 [00:21<00:02,  1.81it/s]Fetching Athlete Sessions:  91%|█████████ | 39/43 [00:21<00:02,  1.81it/s]Fetching Athlete Sessions:  93%|█████████▎| 40/43 [00:22<00:01,  1.82it/s]Fetching Athlete Sessions:  95%|█████████▌| 41/43 [00:22<00:01,  1.80it/s]Fetching Athlete Sessions:  98%|█████████▊| 42/43 [00:23<00:00,  1.83it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:23<00:00,  1.84it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:23<00:00,  1.81it/s]
---- Getting Measurements for AJ Hurt ---
-2025-11-18 10:31:30
-2025-11-19 12:59:55
-2025-11-20 07:04:09
-2025-11-20 09:54:35
-2025-11-20 13:49:55
---- Getting Measurements for River Radamus ---
-2025-11-17 15:36:58
-2025-11-17 15:43:16
-2025-11-18 14:59:58
-2025-11-18 15:16:06
-2025-11-19 14:06:48
-2025-11-19 14:29:36
-2025-11-19 20:36:57
-2025-11-20 14:32:48
-2025-11-20 19:10:50
-2025-11-21 14:37:00
-2025-11-21 18:52:45
-2025-11-22 15:04:18
-2025-11-23 14:26:43
-2025-11-23 17:01:33
-2025-11-24 14:07:15
-2025-11-24 17:02:50
-2025-11-25 16:02:53
-2025-11-25 16:02:53
-2025-11-26 14:11:49
-2025-11-26 19:14:08
-2025-11-27 13:33:44
-2025-11-27 21:24:46
-2025-11-28 12:59:10
-2025-11-28 21:38:03
-2025-11-28 23:20:45
-2025-11-29 13:44:46
-2025-11-29 18:18:37
-2025-11-29 18:38:54
-2025-11-29 21:03:15
-2025-11-30 14:25:33
-2025-11-30 14:25:33
-2025-11-30 14:43:34
-2025-12-02 14:12:09
-2025-12-03 14:17:32
-2025-12-03 14:29:55
-2025-12-03 21:49:16
-2025-12-04 16:03:47
-2025-12-04 16:14:55
-2025-12-05 13:13:23
-2025-12-05 21:48:07
-2025-12-06 12:41:22
-2025-12-06 13:12:04
-2025-12-06 15:59:23
-2025-12-07 12:38:02
-2025-12-07 21:59:29
-2025-12-09 06:15:31
-2025-12-09 07:41:06
-2025-12-10 05:34:50
-2025-12-10 06:05:51
-2025-12-10 12:15:08
-2025-12-11 05:52:06
-2025-12-11 11:08:04
-2025-12-12 04:39:09
-2025-12-12 09:33:38
-2025-12-13 04:48:37
-2025-12-13 15:35:12
-2025-12-14 05:36:47
-2025-12-16 06:14:35
---- Getting Measurements for Bridger Gile ---
-2025-11-24 19:53:49
-2025-11-25 13:07:17
-2025-11-25 16:53:14
-2025-11-25 19:05:34
-2025-11-26 14:00:18
-2025-11-26 18:10:42
-2025-11-27 12:19:04
-2025-11-27 16:02:14
-2025-11-27 23:31:11
-2025-11-28 13:21:35
-2025-11-28 23:10:24
-2025-11-29 14:17:15
-2025-11-30 15:29:27
-2025-12-01 14:12:48
-2025-12-02 00:08:49
-2025-12-02 15:05:49
-2025-12-02 15:10:17
-2025-12-03 11:59:22
-2025-12-03 21:43:53
-2025-12-05 14:54:11
-2025-12-05 15:00:07
-2025-12-06 12:31:05
---- Getting Measurements for Isaiah Nelson ---
-2025-11-16 13:51:12
-2025-11-16 15:58:52
-2025-11-16 16:13:23
-2025-11-16 18:12:45
-2025-11-17 12:09:34
-2025-11-17 18:47:33
-2025-11-18 12:17:55
-2025-11-18 17:41:24
-2025-11-18 20:30:41
-2025-11-19 19:52:34
-2025-11-20 14:04:30
-2025-11-20 18:38:21
-2025-11-21 16:14:33
-2025-11-24 13:11:11
-2025-11-24 22:20:42
-Traceback (most recent call last):
-  File "/Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api/firstbeat_api.py", line 143, in <module>
-    resp = get_measurement_results(athlete, measurement_id)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "/Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api/firstbeat_api.py", line 105, in get_measurement_results
-    resp.raise_for_status()
-  File "/Users/carter.louchheim/anaconda3/envs/usss/lib/python3.11/site-packages/requests/models.py", line 1026, in raise_for_status
-    raise HTTPError(http_error_msg, response=self)
-requests.exceptions.HTTPError: 429 Client Error:  for url: https://api.firstbeat.com/v1/sports/accounts/3-4925/athletes/570113/measurements/14739422/results?format=list&var=rmssd%2Cacwr
-
-Attaching package: ‘dplyr’
-
-The following objects are masked from ‘package:stats’:
-
-    filter, lag
-
-The following objects are masked from ‘package:base’:
-
-    intersect, setdiff, setequal, union
-
-── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ forcats   1.0.1     ✔ readr     2.1.5
-✔ ggplot2   4.0.0     ✔ stringr   1.5.2
-✔ lubridate 1.9.4     ✔ tibble    3.3.0
-✔ purrr     1.1.0     ✔ tidyr     1.3.1
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
-Attaching package: ‘zoo’
-
-The following objects are masked from ‘package:base’:
-
-    as.Date, as.Date.numeric
-
-Requesting user data from Smartabase...
-Wrangling user data from Smartabase...
-✔ User details export successful.
-Error: 'firstbeat_data.csv' does not exist in current working directory ('/Users/carter.louchheim/Desktop/ALP/ALP_firstbeat_api').
-Execution halted
-Found 43 athletes
-Fetching Athlete Sessions:   0%|          | 0/43 [00:00<?, ?it/s]Fetching Athlete Sessions:   2%|▏         | 1/43 [00:00<00:24,  1.71it/s]Fetching Athlete Sessions:   5%|▍         | 2/43 [00:01<00:23,  1.75it/s]Fetching Athlete Sessions:   7%|▋         | 3/43 [00:01<00:23,  1.74it/s]Fetching Athlete Sessions:   9%|▉         | 4/43 [00:02<00:22,  1.73it/s]Fetching Athlete Sessions:  12%|█▏        | 5/43 [00:02<00:21,  1.76it/s]Fetching Athlete Sessions:  14%|█▍        | 6/43 [00:03<00:20,  1.79it/s]Fetching Athlete Sessions:  16%|█▋        | 7/43 [00:04<00:20,  1.74it/s]Fetching Athlete Sessions:  19%|█▊        | 8/43 [00:04<00:19,  1.76it/s]Fetching Athlete Sessions:  21%|██        | 9/43 [00:05<00:19,  1.75it/s]Fetching Athlete Sessions:  23%|██▎       | 10/43 [00:05<00:18,  1.78it/s]Fetching Athlete Sessions:  26%|██▌       | 11/43 [00:06<00:17,  1.79it/s]Fetching Athlete Sessions:  28%|██▊       | 12/43 [00:06<00:17,  1.80it/s]Fetching Athlete Sessions:  30%|███       | 13/43 [00:07<00:16,  1.81it/s]Fetching Athlete Sessions:  33%|███▎      | 14/43 [00:07<00:16,  1.76it/s]Fetching Athlete Sessions:  35%|███▍      | 15/43 [00:08<00:15,  1.78it/s]Fetching Athlete Sessions:  37%|███▋      | 16/43 [00:09<00:15,  1.79it/s]Fetching Athlete Sessions:  40%|███▉      | 17/43 [00:09<00:14,  1.75it/s]Fetching Athlete Sessions:  42%|████▏     | 18/43 [00:10<00:14,  1.73it/s]Fetching Athlete Sessions:  44%|████▍     | 19/43 [00:10<00:13,  1.76it/s]Fetching Athlete Sessions:  47%|████▋     | 20/43 [00:11<00:12,  1.79it/s]Fetching Athlete Sessions:  49%|████▉     | 21/43 [00:11<00:12,  1.81it/s]Fetching Athlete Sessions:  51%|█████     | 22/43 [00:12<00:11,  1.81it/s]Fetching Athlete Sessions:  53%|█████▎    | 23/43 [00:12<00:10,  1.83it/s]Fetching Athlete Sessions:  56%|█████▌    | 24/43 [00:13<00:10,  1.84it/s]Fetching Athlete Sessions:  58%|█████▊    | 25/43 [00:14<00:09,  1.81it/s]Fetching Athlete Sessions:  60%|██████    | 26/43 [00:14<00:09,  1.79it/s]Fetching Athlete Sessions:  63%|██████▎   | 27/43 [00:15<00:09,  1.73it/s]Fetching Athlete Sessions:  65%|██████▌   | 28/43 [00:15<00:08,  1.69it/s]Fetching Athlete Sessions:  67%|██████▋   | 29/43 [00:16<00:08,  1.70it/s]Fetching Athlete Sessions:  70%|██████▉   | 30/43 [00:16<00:07,  1.74it/s]Fetching Athlete Sessions:  72%|███████▏  | 31/43 [00:17<00:06,  1.78it/s]Fetching Athlete Sessions:  74%|███████▍  | 32/43 [00:18<00:06,  1.77it/s]Fetching Athlete Sessions:  77%|███████▋  | 33/43 [00:18<00:05,  1.76it/s]Fetching Athlete Sessions:  79%|███████▉  | 34/43 [00:19<00:05,  1.76it/s]Fetching Athlete Sessions:  81%|████████▏ | 35/43 [00:19<00:04,  1.76it/s]Fetching Athlete Sessions:  84%|████████▎ | 36/43 [00:20<00:04,  1.75it/s]Fetching Athlete Sessions:  86%|████████▌ | 37/43 [00:20<00:03,  1.75it/s]Fetching Athlete Sessions:  88%|████████▊ | 38/43 [00:21<00:03,  1.58it/s]Fetching Athlete Sessions:  91%|█████████ | 39/43 [00:22<00:02,  1.63it/s]Fetching Athlete Sessions:  93%|█████████▎| 40/43 [00:22<00:01,  1.68it/s]Fetching Athlete Sessions:  95%|█████████▌| 41/43 [00:23<00:01,  1.68it/s]Fetching Athlete Sessions:  98%|█████████▊| 42/43 [00:23<00:00,  1.73it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:24<00:00,  1.77it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:24<00:00,  1.75it/s]
-Empty DataFrame
-Columns: []
-Index: []
-
-=== DONE WITH FIRSTBEAT API===
-
-
-Attaching package: ‘dplyr’
-
-The following objects are masked from ‘package:stats’:
-
-    filter, lag
-
-The following objects are masked from ‘package:base’:
-
-    intersect, setdiff, setequal, union
-
-── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ forcats   1.0.1     ✔ readr     2.1.5
-✔ ggplot2   4.0.0     ✔ stringr   1.5.2
-✔ lubridate 1.9.4     ✔ tibble    3.3.0
-✔ purrr     1.1.0     ✔ tidyr     1.3.1
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
-Attaching package: ‘zoo’
-
-The following objects are masked from ‘package:base’:
-
-    as.Date, as.Date.numeric
-
-Requesting user data from Smartabase...
-Wrangling user data from Smartabase...
-✔ User details export successful.
-New names:
-• `` -> `...1`
-Error in `mutate()`:
-ℹ In argument: `Date = as.Date(Date)`.
-Caused by error in `as.Date.default()`:
-! do not know how to convert 'x' to class “Date”
-Backtrace:
-     ▆
-  1. ├─DataUpload %>% select(-c("...1")) %>% ...
-  2. ├─dplyr::mutate(...)
-  3. ├─dplyr:::mutate.data.frame(...)
-  4. │ └─dplyr:::mutate_cols(.data, dplyr_quosures(...), by)
-  5. │   ├─base::withCallingHandlers(...)
-  6. │   └─dplyr:::mutate_col(dots[[i]], data, mask, new_columns)
-  7. │     └─mask$eval_all_mutate(quo)
-  8. │       └─dplyr (local) eval()
-  9. ├─zoo::as.Date(Date)
- 10. ├─zoo (local) as.Date.default(Date)
- 11. │ ├─base::as.Date(x, ...)
- 12. │ └─base::as.Date.default(x, ...)
- 13. │   └─base::stop(...)
- 14. └─base::.handleSimpleError(...)
- 15.   └─dplyr (local) h(simpleError(msg, call))
- 16.     └─rlang::abort(message, class = error_class, parent = parent, call = error_call)
-Execution halted
-Found 43 athletes
-Fetching Athlete Sessions:   0%|          | 0/43 [00:00<?, ?it/s]Fetching Athlete Sessions:   2%|▏         | 1/43 [00:00<00:31,  1.33it/s]Fetching Athlete Sessions:   5%|▍         | 2/43 [00:01<00:26,  1.52it/s]Fetching Athlete Sessions:   7%|▋         | 3/43 [00:01<00:24,  1.64it/s]Fetching Athlete Sessions:   9%|▉         | 4/43 [00:02<00:23,  1.69it/s]Fetching Athlete Sessions:  12%|█▏        | 5/43 [00:02<00:21,  1.76it/s]Fetching Athlete Sessions:  14%|█▍        | 6/43 [00:03<00:20,  1.76it/s]Fetching Athlete Sessions:  16%|█▋        | 7/43 [00:04<00:21,  1.66it/s]Fetching Athlete Sessions:  19%|█▊        | 8/43 [00:04<00:22,  1.59it/s]Fetching Athlete Sessions:  21%|██        | 9/43 [00:05<00:20,  1.65it/s]Fetching Athlete Sessions:  23%|██▎       | 10/43 [00:06<00:20,  1.64it/s]Fetching Athlete Sessions:  26%|██▌       | 11/43 [00:06<00:20,  1.59it/s]Fetching Athlete Sessions:  28%|██▊       | 12/43 [00:07<00:19,  1.59it/s]Fetching Athlete Sessions:  30%|███       | 13/43 [00:07<00:18,  1.65it/s]Fetching Athlete Sessions:  33%|███▎      | 14/43 [00:08<00:16,  1.71it/s]Fetching Athlete Sessions:  35%|███▍      | 15/43 [00:09<00:16,  1.72it/s]Fetching Athlete Sessions:  37%|███▋      | 16/43 [00:09<00:15,  1.76it/s]Fetching Athlete Sessions:  40%|███▉      | 17/43 [00:10<00:14,  1.75it/s]Fetching Athlete Sessions:  42%|████▏     | 18/43 [00:10<00:14,  1.75it/s]Fetching Athlete Sessions:  44%|████▍     | 19/43 [00:11<00:13,  1.76it/s]Fetching Athlete Sessions:  47%|████▋     | 20/43 [00:11<00:12,  1.77it/s]Fetching Athlete Sessions:  49%|████▉     | 21/43 [00:12<00:12,  1.78it/s]Fetching Athlete Sessions:  51%|█████     | 22/43 [00:12<00:11,  1.81it/s]Fetching Athlete Sessions:  53%|█████▎    | 23/43 [00:13<00:11,  1.80it/s]Fetching Athlete Sessions:  56%|█████▌    | 24/43 [00:14<00:10,  1.79it/s]Fetching Athlete Sessions:  58%|█████▊    | 25/43 [00:14<00:10,  1.80it/s]Fetching Athlete Sessions:  60%|██████    | 26/43 [00:15<00:09,  1.78it/s]Fetching Athlete Sessions:  63%|██████▎   | 27/43 [00:15<00:08,  1.78it/s]Fetching Athlete Sessions:  65%|██████▌   | 28/43 [00:16<00:08,  1.79it/s]Fetching Athlete Sessions:  67%|██████▋   | 29/43 [00:16<00:07,  1.77it/s]Fetching Athlete Sessions:  70%|██████▉   | 30/43 [00:17<00:07,  1.75it/s]Fetching Athlete Sessions:  72%|███████▏  | 31/43 [00:18<00:06,  1.75it/s]Fetching Athlete Sessions:  74%|███████▍  | 32/43 [00:18<00:06,  1.61it/s]Fetching Athlete Sessions:  77%|███████▋  | 33/43 [00:19<00:06,  1.64it/s]Fetching Athlete Sessions:  79%|███████▉  | 34/43 [00:19<00:05,  1.68it/s]Fetching Athlete Sessions:  81%|████████▏ | 35/43 [00:20<00:04,  1.73it/s]Fetching Athlete Sessions:  84%|████████▎ | 36/43 [00:21<00:04,  1.74it/s]Fetching Athlete Sessions:  86%|████████▌ | 37/43 [00:21<00:03,  1.72it/s]Fetching Athlete Sessions:  88%|████████▊ | 38/43 [00:22<00:02,  1.75it/s]Fetching Athlete Sessions:  91%|█████████ | 39/43 [00:22<00:02,  1.76it/s]Fetching Athlete Sessions:  93%|█████████▎| 40/43 [00:23<00:01,  1.76it/s]Fetching Athlete Sessions:  95%|█████████▌| 41/43 [00:23<00:01,  1.73it/s]Fetching Athlete Sessions:  98%|█████████▊| 42/43 [00:24<00:00,  1.73it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:25<00:00,  1.77it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:25<00:00,  1.72it/s]
---- Getting Measurements for River Radamus ---
-2025-12-17 06:39:34
---- Getting Measurements for Ben Ritchie ---
-2025-12-17 10:29:11
-   start_date start_time    end_date  ...       Session Type     RMSSD        ACWR
-0  17/12/2025    6:36 AM  17/12/2025  ...  quickRecoveryTest  1.088113  109.771641
-1  17/12/2025    6:48 AM  17/12/2025  ...           exercise  1.165513   17.379367
-
-[2 rows x 12 columns]
-
-=== DONE WITH FIRSTBEAT API===
-
-
-Attaching package: ‘dplyr’
-
-The following objects are masked from ‘package:stats’:
-
-    filter, lag
-
-The following objects are masked from ‘package:base’:
-
-    intersect, setdiff, setequal, union
-
-── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ forcats   1.0.1     ✔ readr     2.1.5
-✔ ggplot2   4.0.0     ✔ stringr   1.5.2
-✔ lubridate 1.9.4     ✔ tibble    3.3.0
-✔ purrr     1.1.0     ✔ tidyr     1.3.1
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
-Attaching package: ‘zoo’
-
-The following objects are masked from ‘package:base’:
-
-    as.Date, as.Date.numeric
-
-Requesting user data from Smartabase...
-Wrangling user data from Smartabase...
-✔ User details export successful.
-New names:
-• `` -> `...1`
-Logging carter.louchheim into https://usopc.smartabase.com/athlete360-usss...
-✔ Successfully logged carter.louchheim into https://usopc.smartabase.com/athlete360-usss.
-INSERTING 2 records into Firstbeat Summary Stats over 1 calls to the Smartabase…
-INSERTING 2 new records into Firstbeat Summary Stats...
-✔ SUCCESSFULLY_INSERTED: 2 out of 2 records successfully inserted into Firstbeat Summary Stats.
-! The following fields do not exist in Firstbeat Summary Stats and were not imported:
-  ! Date
-  ! Time
-ℹ Form: Firstbeat Summary Stats
-ℹ Import result: SUCCESSFULLY_IMPORTED
-ℹ Records succesfully imported: 2
-ℹ Records attempted imported: 2
-ℹ Total API calls: 1
-# A tibble: 2 × 17
-  start_date start_time end_date end_time Date  Time  ID    `Session Type` RMSSD
-  <chr>      <chr>      <chr>    <chr>    <chr> <chr> <chr> <chr>          <chr>
-1 17/12/2025 6:36 AM    17/12/2… 6:39 AM  FIEL… FIEL… 1483… quickRecovery… 1.08…
-2 17/12/2025 6:48 AM    17/12/2… 10:29 AM FIEL… FIEL… 1483… exercise       1.16…
-# ℹ 8 more variables: ACWR <chr>, user_id <chr>, form <chr>,
-#   entered_by_user_id <int>, import_action <chr>, import_result <chr>,
-#   api_call_index <int>, import_time <dbl>
-Warning message:
-In .remove_protected_column_names(.) :
-  'First Name' and 'Last Name' are protected names and will be removed from the dataset
-[1] TRUE
-Found 43 athletes
-Fetching Athlete Sessions:   0%|          | 0/43 [00:00<?, ?it/s]Fetching Athlete Sessions:   2%|▏         | 1/43 [00:00<00:25,  1.67it/s]Fetching Athlete Sessions:   5%|▍         | 2/43 [00:01<00:23,  1.75it/s]Fetching Athlete Sessions:   7%|▋         | 3/43 [00:01<00:22,  1.78it/s]Fetching Athlete Sessions:   9%|▉         | 4/43 [00:02<00:21,  1.79it/s]Fetching Athlete Sessions:  12%|█▏        | 5/43 [00:02<00:20,  1.81it/s]Fetching Athlete Sessions:  14%|█▍        | 6/43 [00:03<00:20,  1.81it/s]Fetching Athlete Sessions:  16%|█▋        | 7/43 [00:03<00:20,  1.79it/s]Fetching Athlete Sessions:  19%|█▊        | 8/43 [00:04<00:19,  1.77it/s]Fetching Athlete Sessions:  21%|██        | 9/43 [00:05<00:19,  1.78it/s]Fetching Athlete Sessions:  23%|██▎       | 10/43 [00:05<00:18,  1.79it/s]Fetching Athlete Sessions:  26%|██▌       | 11/43 [00:06<00:17,  1.79it/s]Fetching Athlete Sessions:  28%|██▊       | 12/43 [00:06<00:17,  1.79it/s]Fetching Athlete Sessions:  30%|███       | 13/43 [00:07<00:16,  1.79it/s]Fetching Athlete Sessions:  33%|███▎      | 14/43 [00:07<00:16,  1.79it/s]Fetching Athlete Sessions:  35%|███▍      | 15/43 [00:08<00:15,  1.81it/s]Fetching Athlete Sessions:  37%|███▋      | 16/43 [00:08<00:15,  1.79it/s]Fetching Athlete Sessions:  40%|███▉      | 17/43 [00:09<00:14,  1.79it/s]Fetching Athlete Sessions:  42%|████▏     | 18/43 [00:10<00:14,  1.78it/s]Fetching Athlete Sessions:  44%|████▍     | 19/43 [00:10<00:13,  1.78it/s]Fetching Athlete Sessions:  47%|████▋     | 20/43 [00:11<00:13,  1.76it/s]Fetching Athlete Sessions:  49%|████▉     | 21/43 [00:11<00:12,  1.75it/s]Fetching Athlete Sessions:  51%|█████     | 22/43 [00:12<00:13,  1.58it/s]Fetching Athlete Sessions:  53%|█████▎    | 23/43 [00:13<00:12,  1.63it/s]Fetching Athlete Sessions:  56%|█████▌    | 24/43 [00:13<00:11,  1.68it/s]Fetching Athlete Sessions:  58%|█████▊    | 25/43 [00:14<00:10,  1.70it/s]Fetching Athlete Sessions:  60%|██████    | 26/43 [00:14<00:09,  1.72it/s]Fetching Athlete Sessions:  63%|██████▎   | 27/43 [00:15<00:09,  1.75it/s]Fetching Athlete Sessions:  65%|██████▌   | 28/43 [00:15<00:08,  1.76it/s]Fetching Athlete Sessions:  67%|██████▋   | 29/43 [00:16<00:07,  1.77it/s]Fetching Athlete Sessions:  70%|██████▉   | 30/43 [00:17<00:07,  1.75it/s]Fetching Athlete Sessions:  72%|███████▏  | 31/43 [00:17<00:06,  1.74it/s]Fetching Athlete Sessions:  74%|███████▍  | 32/43 [00:18<00:06,  1.78it/s]Fetching Athlete Sessions:  77%|███████▋  | 33/43 [00:18<00:05,  1.77it/s]Fetching Athlete Sessions:  79%|███████▉  | 34/43 [00:19<00:05,  1.79it/s]Fetching Athlete Sessions:  81%|████████▏ | 35/43 [00:19<00:04,  1.79it/s]Fetching Athlete Sessions:  84%|████████▎ | 36/43 [00:20<00:03,  1.81it/s]Fetching Athlete Sessions:  86%|████████▌ | 37/43 [00:21<00:03,  1.76it/s]Fetching Athlete Sessions:  88%|████████▊ | 38/43 [00:21<00:02,  1.77it/s]Fetching Athlete Sessions:  91%|█████████ | 39/43 [00:22<00:02,  1.77it/s]Fetching Athlete Sessions:  93%|█████████▎| 40/43 [00:22<00:01,  1.61it/s]Fetching Athlete Sessions:  95%|█████████▌| 41/43 [00:23<00:01,  1.64it/s]Fetching Athlete Sessions:  98%|█████████▊| 42/43 [00:24<00:00,  1.71it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:24<00:00,  1.74it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:24<00:00,  1.75it/s]
---- Getting Measurements for Lauren Macuga ---
-2025-12-17 20:10:21
-2025-12-17 20:16:22
-   start_date start_time    end_date  ... Session Type     RMSSD       ACWR
-0  17/12/2025    7:04 PM  17/12/2025  ...     exercise  2.076325   4.046241
-1  17/12/2025    8:12 PM  17/12/2025  ...     exercise  2.076325  14.173441
-
-[2 rows x 12 columns]
-
-=== DONE WITH FIRSTBEAT API===
-
-
-Attaching package: ‘dplyr’
-
-The following objects are masked from ‘package:stats’:
-
-    filter, lag
-
-The following objects are masked from ‘package:base’:
-
-    intersect, setdiff, setequal, union
-
-── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ forcats   1.0.1     ✔ readr     2.1.5
-✔ ggplot2   4.0.0     ✔ stringr   1.5.2
-✔ lubridate 1.9.4     ✔ tibble    3.3.0
-✔ purrr     1.1.0     ✔ tidyr     1.3.1
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
-Attaching package: ‘zoo’
-
-The following objects are masked from ‘package:base’:
-
-    as.Date, as.Date.numeric
-
-Requesting user data from Smartabase...
-Wrangling user data from Smartabase...
-✔ User details export successful.
-New names:
-• `` -> `...1`
-Logging carter.louchheim into https://usopc.smartabase.com/athlete360-usss...
-✔ Successfully logged carter.louchheim into https://usopc.smartabase.com/athlete360-usss.
-ℹ Duplicate user_id and start_date were detected.
-  • These rows will be imported separately since table_field = NULL
-INSERTING 2 records into Firstbeat Summary Stats over 2 calls to the Smartabase…
-1: INSERTING 1 new record into Firstbeat Summary Stats...
-✔ 1: SUCCESSFULLY_INSERTED: 1 out of 1 records successfully inserted into Firstbeat Summary Stats.
-2: INSERTING 1 new record into Firstbeat Summary Stats...
-✔ 2: SUCCESSFULLY_INSERTED: 1 out of 1 records successfully inserted into Firstbeat Summary Stats.
-! The following fields do not exist in Firstbeat Summary Stats and were not imported:
-  ! Date
-  ! Time
-ℹ Form: Firstbeat Summary Stats
-ℹ Import result: SUCCESSFULLY_IMPORTED
-ℹ Records succesfully imported: 1
-ℹ Records attempted imported: 1
-ℹ Total API calls: 2
-# A tibble: 2 × 17
-  start_date start_time end_date end_time Date  Time  ID    `Session Type` RMSSD
-  <chr>      <chr>      <chr>    <chr>    <chr> <chr> <chr> <chr>          <chr>
-1 17/12/2025 7:04 PM    17/12/2… 8:10 PM  FIEL… FIEL… 1484… exercise       2.07…
-2 17/12/2025 8:12 PM    17/12/2… 8:16 PM  FIEL… FIEL… 1484… exercise       2.07…
-# ℹ 8 more variables: ACWR <chr>, user_id <chr>, form <chr>,
-#   entered_by_user_id <int>, import_action <chr>, import_result <chr>,
-#   api_call_index <int>, import_time <dbl>
-Warning message:
-In .remove_protected_column_names(.) :
-  'First Name' and 'Last Name' are protected names and will be removed from the dataset
-[1] TRUE
-Found 43 athletes
-Fetching Athlete Sessions:   0%|          | 0/43 [00:00<?, ?it/s]Fetching Athlete Sessions:   2%|▏         | 1/43 [00:00<00:22,  1.83it/s]Fetching Athlete Sessions:   5%|▍         | 2/43 [00:01<00:23,  1.77it/s]Fetching Athlete Sessions:   7%|▋         | 3/43 [00:01<00:26,  1.51it/s]Fetching Athlete Sessions:   9%|▉         | 4/43 [00:02<00:25,  1.52it/s]Fetching Athlete Sessions:  12%|█▏        | 5/43 [00:03<00:23,  1.62it/s]Fetching Athlete Sessions:  14%|█▍        | 6/43 [00:03<00:21,  1.69it/s]Fetching Athlete Sessions:  16%|█▋        | 7/43 [00:04<00:21,  1.71it/s]Fetching Athlete Sessions:  19%|█▊        | 8/43 [00:04<00:20,  1.74it/s]Fetching Athlete Sessions:  21%|██        | 9/43 [00:05<00:19,  1.73it/s]Fetching Athlete Sessions:  23%|██▎       | 10/43 [00:05<00:19,  1.73it/s]Fetching Athlete Sessions:  26%|██▌       | 11/43 [00:06<00:18,  1.74it/s]Fetching Athlete Sessions:  28%|██▊       | 12/43 [00:07<00:17,  1.73it/s]Fetching Athlete Sessions:  30%|███       | 13/43 [00:07<00:17,  1.74it/s]Fetching Athlete Sessions:  33%|███▎      | 14/43 [00:08<00:16,  1.72it/s]Fetching Athlete Sessions:  35%|███▍      | 15/43 [00:08<00:17,  1.61it/s]Fetching Athlete Sessions:  37%|███▋      | 16/43 [00:09<00:16,  1.68it/s]Fetching Athlete Sessions:  40%|███▉      | 17/43 [00:10<00:15,  1.71it/s]Fetching Athlete Sessions:  42%|████▏     | 18/43 [00:10<00:14,  1.70it/s]Fetching Athlete Sessions:  44%|████▍     | 19/43 [00:11<00:13,  1.72it/s]Fetching Athlete Sessions:  47%|████▋     | 20/43 [00:11<00:13,  1.74it/s]Fetching Athlete Sessions:  49%|████▉     | 21/43 [00:12<00:12,  1.76it/s]Fetching Athlete Sessions:  51%|█████     | 22/43 [00:12<00:11,  1.78it/s]Fetching Athlete Sessions:  53%|█████▎    | 23/43 [00:13<00:11,  1.79it/s]Fetching Athlete Sessions:  56%|█████▌    | 24/43 [00:14<00:10,  1.75it/s]Fetching Athlete Sessions:  58%|█████▊    | 25/43 [00:14<00:10,  1.73it/s]Fetching Athlete Sessions:  60%|██████    | 26/43 [00:15<00:09,  1.74it/s]Fetching Athlete Sessions:  63%|██████▎   | 27/43 [00:15<00:09,  1.69it/s]Fetching Athlete Sessions:  65%|██████▌   | 28/43 [00:16<00:08,  1.70it/s]Fetching Athlete Sessions:  67%|██████▋   | 29/43 [00:16<00:08,  1.72it/s]Fetching Athlete Sessions:  70%|██████▉   | 30/43 [00:17<00:07,  1.74it/s]Fetching Athlete Sessions:  72%|███████▏  | 31/43 [00:18<00:06,  1.75it/s]Fetching Athlete Sessions:  74%|███████▍  | 32/43 [00:18<00:06,  1.77it/s]Fetching Athlete Sessions:  77%|███████▋  | 33/43 [00:19<00:06,  1.61it/s]Fetching Athlete Sessions:  79%|███████▉  | 34/43 [00:19<00:05,  1.64it/s]Fetching Athlete Sessions:  81%|████████▏ | 35/43 [00:20<00:04,  1.70it/s]Fetching Athlete Sessions:  84%|████████▎ | 36/43 [00:21<00:04,  1.71it/s]Fetching Athlete Sessions:  86%|████████▌ | 37/43 [00:21<00:03,  1.65it/s]Fetching Athlete Sessions:  88%|████████▊ | 38/43 [00:22<00:02,  1.70it/s]Fetching Athlete Sessions:  91%|█████████ | 39/43 [00:22<00:02,  1.72it/s]Fetching Athlete Sessions:  93%|█████████▎| 40/43 [00:23<00:01,  1.73it/s]Fetching Athlete Sessions:  95%|█████████▌| 41/43 [00:23<00:01,  1.75it/s]Fetching Athlete Sessions:  98%|█████████▊| 42/43 [00:24<00:00,  1.75it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:25<00:00,  1.76it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:25<00:00,  1.71it/s]
---- Getting Measurements for Lauren Macuga ---
-2025-12-17 20:16:22
-   start_date start_time    end_date  ... Session Type     RMSSD       ACWR
-0  17/12/2025    8:12 PM  17/12/2025  ...     exercise  2.076325  14.173441
-
-[1 rows x 12 columns]
-
-=== DONE WITH FIRSTBEAT API===
-
-
-Attaching package: ‘dplyr’
-
-The following objects are masked from ‘package:stats’:
-
-    filter, lag
-
-The following objects are masked from ‘package:base’:
-
-    intersect, setdiff, setequal, union
-
-── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ forcats   1.0.1     ✔ readr     2.1.5
-✔ ggplot2   4.0.0     ✔ stringr   1.5.2
-✔ lubridate 1.9.4     ✔ tibble    3.3.0
-✔ purrr     1.1.0     ✔ tidyr     1.3.1
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
-Attaching package: ‘zoo’
-
-The following objects are masked from ‘package:base’:
-
-    as.Date, as.Date.numeric
-
-Requesting user data from Smartabase...
-Wrangling user data from Smartabase...
-✔ User details export successful.
-New names:
-• `` -> `...1`
-Logging carter.louchheim into https://usopc.smartabase.com/athlete360-usss...
-✔ Successfully logged carter.louchheim into https://usopc.smartabase.com/athlete360-usss.
-INSERTING 1 record into Firstbeat Summary Stats over 1 calls to the Smartabase …
-INSERTING 1 new record into Firstbeat Summary Stats...
-✔ SUCCESSFULLY_INSERTED: 1 out of 1 records successfully inserted into Firstbeat Summary Stats.
-! The following fields do not exist in Firstbeat Summary Stats and were not imported:
-  ! Date
-  ! Time
-ℹ Form: Firstbeat Summary Stats
-ℹ Import result: SUCCESSFULLY_IMPORTED
-ℹ Records succesfully imported: 1
-ℹ Records attempted imported: 1
-ℹ Total API calls: 1
-# A tibble: 1 × 17
-  start_date start_time end_date end_time Date  Time  ID    `Session Type` RMSSD
-  <chr>      <chr>      <chr>    <chr>    <chr> <chr> <chr> <chr>          <chr>
-1 17/12/2025 8:12 PM    17/12/2… 8:16 PM  FIEL… FIEL… 1484… exercise       2.07…
-# ℹ 8 more variables: ACWR <chr>, user_id <chr>, form <chr>,
-#   entered_by_user_id <int>, import_action <chr>, import_result <chr>,
-#   api_call_index <int>, import_time <dbl>
-Warning message:
-In .remove_protected_column_names(.) :
-  'First Name' and 'Last Name' are protected names and will be removed from the dataset
-[1] TRUE
-Found 43 athletes
-Fetching Athlete Sessions:   0%|          | 0/43 [00:00<?, ?it/s]Fetching Athlete Sessions:   2%|▏         | 1/43 [00:00<00:22,  1.84it/s]Fetching Athlete Sessions:   5%|▍         | 2/43 [00:01<00:22,  1.82it/s]Fetching Athlete Sessions:   7%|▋         | 3/43 [00:01<00:21,  1.86it/s]Fetching Athlete Sessions:   9%|▉         | 4/43 [00:02<00:23,  1.64it/s]Fetching Athlete Sessions:  12%|█▏        | 5/43 [00:02<00:22,  1.69it/s]Fetching Athlete Sessions:  14%|█▍        | 6/43 [00:03<00:21,  1.73it/s]Fetching Athlete Sessions:  16%|█▋        | 7/43 [00:04<00:20,  1.76it/s]Fetching Athlete Sessions:  19%|█▊        | 8/43 [00:04<00:19,  1.80it/s]Fetching Athlete Sessions:  21%|██        | 9/43 [00:05<00:19,  1.76it/s]Fetching Athlete Sessions:  23%|██▎       | 10/43 [00:05<00:18,  1.77it/s]Fetching Athlete Sessions:  26%|██▌       | 11/43 [00:06<00:17,  1.80it/s]Fetching Athlete Sessions:  28%|██▊       | 12/43 [00:06<00:17,  1.81it/s]Fetching Athlete Sessions:  30%|███       | 13/43 [00:07<00:16,  1.79it/s]Fetching Athlete Sessions:  33%|███▎      | 14/43 [00:07<00:16,  1.80it/s]Fetching Athlete Sessions:  35%|███▍      | 15/43 [00:08<00:15,  1.81it/s]Fetching Athlete Sessions:  37%|███▋      | 16/43 [00:08<00:14,  1.82it/s]Fetching Athlete Sessions:  40%|███▉      | 17/43 [00:09<00:14,  1.83it/s]Fetching Athlete Sessions:  42%|████▏     | 18/43 [00:10<00:13,  1.86it/s]Fetching Athlete Sessions:  44%|████▍     | 19/43 [00:10<00:12,  1.86it/s]Fetching Athlete Sessions:  47%|████▋     | 20/43 [00:11<00:13,  1.76it/s]Fetching Athlete Sessions:  49%|████▉     | 21/43 [00:11<00:13,  1.65it/s]Fetching Athlete Sessions:  51%|█████     | 22/43 [00:12<00:12,  1.71it/s]Fetching Athlete Sessions:  53%|█████▎    | 23/43 [00:12<00:11,  1.76it/s]Fetching Athlete Sessions:  56%|█████▌    | 24/43 [00:13<00:10,  1.78it/s]Fetching Athlete Sessions:  58%|█████▊    | 25/43 [00:14<00:10,  1.79it/s]Fetching Athlete Sessions:  60%|██████    | 26/43 [00:14<00:09,  1.82it/s]Fetching Athlete Sessions:  63%|██████▎   | 27/43 [00:15<00:08,  1.85it/s]Fetching Athlete Sessions:  65%|██████▌   | 28/43 [00:15<00:08,  1.87it/s]Fetching Athlete Sessions:  67%|██████▋   | 29/43 [00:16<00:07,  1.85it/s]Fetching Athlete Sessions:  70%|██████▉   | 30/43 [00:16<00:07,  1.83it/s]Fetching Athlete Sessions:  72%|███████▏  | 31/43 [00:17<00:06,  1.81it/s]Fetching Athlete Sessions:  74%|███████▍  | 32/43 [00:17<00:05,  1.85it/s]Fetching Athlete Sessions:  77%|███████▋  | 33/43 [00:18<00:05,  1.87it/s]Fetching Athlete Sessions:  79%|███████▉  | 34/43 [00:18<00:04,  1.87it/s]Fetching Athlete Sessions:  81%|████████▏ | 35/43 [00:19<00:04,  1.84it/s]Fetching Athlete Sessions:  84%|████████▎ | 36/43 [00:19<00:03,  1.85it/s]Fetching Athlete Sessions:  86%|████████▌ | 37/43 [00:20<00:03,  1.81it/s]Fetching Athlete Sessions:  88%|████████▊ | 38/43 [00:21<00:02,  1.83it/s]Fetching Athlete Sessions:  91%|█████████ | 39/43 [00:21<00:02,  1.63it/s]Fetching Athlete Sessions:  93%|█████████▎| 40/43 [00:22<00:01,  1.69it/s]Fetching Athlete Sessions:  95%|█████████▌| 41/43 [00:22<00:01,  1.73it/s]Fetching Athlete Sessions:  98%|█████████▊| 42/43 [00:23<00:00,  1.75it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:24<00:00,  1.78it/s]Fetching Athlete Sessions: 100%|██████████| 43/43 [00:24<00:00,  1.79it/s]
---- Getting Measurements for River Radamus ---
-2025-12-19 05:04:27
---- Getting Measurements for Isaiah Nelson ---
-2025-12-19 06:54:09
---- Getting Measurements for Ben Ritchie ---
-2025-12-19 09:02:29
---- Getting Measurements for Kyle Negomir ---
-2025-12-19 13:03:31
---- Getting Measurements for Katie Hensien ---
-2025-12-18 17:46:43
-2025-12-18 19:56:11
-   start_date start_time    end_date  ...       Session Type     RMSSD       ACWR
-0  19/12/2025    5:01 AM  19/12/2025  ...  quickRecoveryTest  1.085813  69.318633
-1  19/12/2025    6:51 AM  19/12/2025  ...  quickRecoveryTest  0.000000  53.229236
-2  19/12/2025    6:45 AM  19/12/2025  ...           exercise  1.352294  12.779301
-3  19/12/2025    7:13 AM  19/12/2025  ...           exercise  1.393648  23.202119
-4  18/12/2025    4:15 PM  18/12/2025  ...           exercise  1.489916   6.724643
-5  18/12/2025    6:43 PM  18/12/2025  ...           exercise  1.489916  14.738836
-
-[6 rows x 12 columns]
-
-=== DONE WITH FIRSTBEAT API===
-
-
-Attaching package: ‘dplyr’
-
-The following objects are masked from ‘package:stats’:
-
-    filter, lag
-
-The following objects are masked from ‘package:base’:
-
-    intersect, setdiff, setequal, union
-
-── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
-✔ forcats   1.0.1     ✔ readr     2.1.5
-✔ ggplot2   4.0.0     ✔ stringr   1.5.2
-✔ lubridate 1.9.4     ✔ tibble    3.3.0
-✔ purrr     1.1.0     ✔ tidyr     1.3.1
-── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-✖ dplyr::filter() masks stats::filter()
-✖ dplyr::lag()    masks stats::lag()
-ℹ Use the conflicted package (<http://conflicted.r-lib.org/>) to force all conflicts to become errors
-
-Attaching package: ‘zoo’
-
-The following objects are masked from ‘package:base’:
-
-    as.Date, as.Date.numeric
-
-Requesting user data from Smartabase...
-Wrangling user data from Smartabase...
-✔ User details export successful.
-New names:
-• `` -> `...1`
-Logging carter.louchheim into https://usopc.smartabase.com/athlete360-usss...
-✔ Successfully logged carter.louchheim into https://usopc.smartabase.com/athlete360-usss.
-ℹ Duplicate user_id and start_date were detected.
-  • These rows will be imported separately since table_field = NULL
-INSERTING 6 records into Firstbeat Summary Stats over 2 calls to the Smartabase…
-1: INSERTING 5 new records into Firstbeat Summary Stats...
-✔ 1: SUCCESSFULLY_INSERTED: 5 out of 5 records successfully inserted into Firstbeat Summary Stats.
-2: INSERTING 1 new record into Firstbeat Summary Stats...
-✔ 2: SUCCESSFULLY_INSERTED: 1 out of 1 records successfully inserted into Firstbeat Summary Stats.
-! The following fields do not exist in Firstbeat Summary Stats and were not imported:
-  ! Date
-  ! Time
-ℹ Form: Firstbeat Summary Stats
-ℹ Import result: SUCCESSFULLY_IMPORTED
-ℹ Records succesfully imported: 6
-ℹ Records attempted imported: 6
-ℹ Total API calls: 2
-# A tibble: 6 × 17
-  start_date start_time end_date end_time Date  Time  ID    `Session Type` RMSSD
-  <chr>      <chr>      <chr>    <chr>    <chr> <chr> <chr> <chr>          <chr>
-1 19/12/2025 7:13 AM    19/12/2… 1:03 PM  FIEL… FIEL… 1484… exercise       1.39…
-2 19/12/2025 6:51 AM    19/12/2… 6:54 AM  FIEL… FIEL… 1484… quickRecovery… 0    
-3 19/12/2025 5:01 AM    19/12/2… 5:04 AM  FIEL… FIEL… 1484… quickRecovery… 1.08…
-4 19/12/2025 6:45 AM    19/12/2… 9:02 AM  FIEL… FIEL… 1484… exercise       1.35…
-5 18/12/2025 4:15 PM    18/12/2… 5:46 PM  FIEL… FIEL… 1484… exercise       1.48…
-6 18/12/2025 6:43 PM    18/12/2… 7:56 PM  FIEL… FIEL… 1484… exercise       1.48…
-# ℹ 8 more variables: ACWR <chr>, user_id <chr>, form <chr>,
-#   entered_by_user_id <int>, import_action <chr>, import_result <chr>,
-#   api_call_index <int>, import_time <dbl>
-Warning message:
-In .remove_protected_column_names(.) :
-  'First Name' and 'Last Name' are protected names and will be removed from the dataset
-[1] TRUE
