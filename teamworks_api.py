@@ -1,4 +1,3 @@
-import os
 import requests
 import pandas as pd
 from requests.auth import HTTPBasicAuth
@@ -166,7 +165,8 @@ def _build_event_payload(row, form_name):
 def upload_dataframe(df: pd.DataFrame, form_name, sb_username, sb_password, sb_url, sb_app_id, verbose: bool = True) -> int:
     """
     Uploads form name data into Smartabase.
-    NOTE: DataFrame must contain the correct that match the form in 
+    NOTE: DataFrame must contain the correct that match the form in and must have columns:
+        "First Name", "Last Name", "ID" where ID is a unique identifier for the measurement/event that allows for deduplication.
     """
 
     # check that required rows are in here
