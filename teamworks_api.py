@@ -8,12 +8,10 @@ from requests.auth import HTTPBasicAuth
 # ENV / CONSTANTS
 # =========================
 load_dotenv()
-SB_BASE_URL = os.getenv("SB_BASE_URL", "https://server.smartabase.com/site")
+SB_BASE_URL = os.getenv("SB_BASE_URL")
 SB_USERNAME = os.getenv("SB_USERNAME")
 SB_PASSWORD = os.getenv("SB_PASSWORD")
 SB_APP_ID   = os.getenv("SB_APP_ID", "firstbeat-sync")
-
-FORM_NAME = "Firstbeat Summary Stats"
 
 if not SB_USERNAME or not SB_PASSWORD:
     raise RuntimeError("Missing SB_USERNAME or SB_PASSWORD in environment")
@@ -80,9 +78,9 @@ def get_usss_user_map():
 # EXISTING EVENTS (DEDUP)
 # =========================
 
-def get_existing_measurement_ids(user_ids):
+def get_existing_measurement_ids(user_ids, form_name):
     """
-    Pulls existing Firstbeat Summary Stats events
+    Pulls existing form events
     and returns a set of measurement IDs already uploaded.
     """
     if not user_ids:
@@ -91,7 +89,7 @@ def get_existing_measurement_ids(user_ids):
     url = f"{SB_BASE_URL}/api/v1/synchronise?informat=json&format=json"
 
     payload = {
-        "formName": FORM_NAME,
+        "formName": form_name,
         "lastSynchronisationTimeOnServer": 0,
         "userIds": list(set(user_ids)),
         "paginate": True
@@ -129,9 +127,9 @@ def get_existing_measurement_ids(user_ids):
 # EVENT PAYLOAD
 # =========================
 
-def _build_event_payload(row):
+def _build_event_payload(row, form_name):
     return {
-        "formName": FORM_NAME,
+        "formName": form_name,
         "startDate": row["start_date"],
         "startTime": row["start_time"],
         "finishDate": row["end_date"],
@@ -154,18 +152,21 @@ def _build_event_payload(row):
 # PUBLIC ENTRY POINT
 # =========================
 
-def upload_firstbeat_dataframe(df: pd.DataFrame, verbose: bool = True) -> int:
+def upload_dataframe(df: pd.DataFrame, form_name, verbose: bool = True) -> int:
     """
-    Uploads Firstbeat data into Smartabase.
-
-    Required columns:
-        First Name, Last Name, start_date, start_time,
-        end_date, end_time, ID, Session Type, RMSSD, ACWR
+    Uploads form name data into Smartabase.
+    NOTE: DataFrame must contain the correct that match the form in 
     """
 
+    # check that required rows are in here
+    required_columns = ["First Name", "Last Name", "ID"]
+    if not all(col in df.columns for col in required_columns):
+        raise ValueError(f"DataFrame must contain the following columns: {required_columns}")
+
+    # check if there is data to upload
     if df.empty:
         if verbose:
-            print("No Firstbeat rows provided. Nothing to upload.")
+            print("No data rows provided. Nothing to upload.")
         return 0
 
     # -------------------------
@@ -189,7 +190,7 @@ def upload_firstbeat_dataframe(df: pd.DataFrame, verbose: bool = True) -> int:
     # -------------------------
     # Remove duplicates
     # -------------------------
-    existing_ids = get_existing_measurement_ids(df["user_id"].tolist())
+    existing_ids = get_existing_measurement_ids(df["user_id"].tolist(), form_name)
     df = df[~df["ID"].isin(existing_ids)]
 
     if df.empty:
@@ -223,6 +224,6 @@ def upload_firstbeat_dataframe(df: pd.DataFrame, verbose: bool = True) -> int:
             print(f"FAILED ({row['ID']}): {r.status_code} - {r.text}")
 
     if verbose:
-        print(f"Successfully uploaded {success_count} Firstbeat events.")
+        print(f"Successfully uploaded {success_count} {form_name} events.")
 
     return success_count
