@@ -25,6 +25,86 @@ Required Args for the data_upload function:
          - this is different from the event-ID and allows for deduplication and merging
          - this should be either pulled from the api or created in a unique and replicable way
 '''
+# =========================
+# PUBLIC ENTRY POINT - MAIN MEHTHOD
+# =========================
+
+def upload_dataframe(df: pd.DataFrame, form_name, sb_username, sb_password, sb_url, sb_app_id, verbose: bool = True) -> int:
+    """
+    Uploads form name data into Smartabase.
+    NOTE: DataFrame must contain the correct that match the form in and must have columns:
+        "First Name", "Last Name", "ID" where ID is a unique identifier for the measurement/event that allows for deduplication.
+    """
+
+    # check that required rows are in here
+    required_columns = ["First Name", "Last Name", "ID"]
+    if not all(col in df.columns for col in required_columns):
+        raise ValueError(f"DataFrame must contain the following columns: {required_columns}")
+
+    # check if there is data to upload
+    if df.empty:
+        if verbose:
+            print("No data rows provided. Nothing to upload.")
+        return 0
+
+    # -------------------------
+    # Map users
+    # -------------------------
+    user_map = get_usss_user_map(sb_username, sb_password, sb_url, sb_app_id)
+
+    df = df.copy()
+    df["user_id"] = df.apply(
+        lambda r: user_map.get((r["First Name"], r["Last Name"])),
+        axis=1
+    )
+
+    df = df[df["user_id"].notna()]
+
+    if df.empty:
+        if verbose:
+            print("No rows matched Smartabase users. Nothing to upload.")
+        return 0
+
+    # -------------------------
+    # Remove duplicates
+    # -------------------------
+    existing_ids = get_existing_measurement_ids(df["user_id"].tolist(), form_name, sb_username, sb_password, sb_app_id, sb_url)
+    df = df[~df["ID"].isin(existing_ids)]
+
+    if df.empty:
+        if verbose:
+            print("All rows already exist in Smartabase. Nothing to upload.")
+        return 0
+
+    # -------------------------
+    # Upload
+    # -------------------------
+    url = f"{sb_url}/api/v1/eventimport?informat=json&format=json"
+
+    success_count = 0
+
+    for _, row in df.iterrows():
+        payload = _build_event_payload(row, form_name)
+
+        r = requests.post(
+            url,
+            headers=_sb_headers(sb_app_id),
+            auth=_sb_auth(sb_username, sb_password),
+            json=payload,
+            timeout=30
+        )
+
+        if r.status_code == 200:
+            success_count += 1
+            if verbose:
+                print(f"Uploaded Measurement: {row['First Name']} {row['Last Name']} (Session ID: {row['ID']})")
+        else:
+            print(f"FAILED ({row['ID']}): {r.status_code} - {r.text}")
+
+    if verbose:
+        print(f"Successfully uploaded {success_count} {form_name} events.")
+
+    return success_count
 
 # =========================
 # AUTH / HEADERS
@@ -158,83 +238,3 @@ def _build_event_payload(row, form_name):
         ]
     }
 
-# =========================
-# PUBLIC ENTRY POINT
-# =========================
-
-def upload_dataframe(df: pd.DataFrame, form_name, sb_username, sb_password, sb_url, sb_app_id, verbose: bool = True) -> int:
-    """
-    Uploads form name data into Smartabase.
-    NOTE: DataFrame must contain the correct that match the form in and must have columns:
-        "First Name", "Last Name", "ID" where ID is a unique identifier for the measurement/event that allows for deduplication.
-    """
-
-    # check that required rows are in here
-    required_columns = ["First Name", "Last Name", "ID"]
-    if not all(col in df.columns for col in required_columns):
-        raise ValueError(f"DataFrame must contain the following columns: {required_columns}")
-
-    # check if there is data to upload
-    if df.empty:
-        if verbose:
-            print("No data rows provided. Nothing to upload.")
-        return 0
-
-    # -------------------------
-    # Map users
-    # -------------------------
-    user_map = get_usss_user_map(sb_username, sb_password, sb_url, sb_app_id)
-
-    df = df.copy()
-    df["user_id"] = df.apply(
-        lambda r: user_map.get((r["First Name"], r["Last Name"])),
-        axis=1
-    )
-
-    df = df[df["user_id"].notna()]
-
-    if df.empty:
-        if verbose:
-            print("No rows matched Smartabase users. Nothing to upload.")
-        return 0
-
-    # -------------------------
-    # Remove duplicates
-    # -------------------------
-    existing_ids = get_existing_measurement_ids(df["user_id"].tolist(), form_name, sb_username, sb_password, sb_app_id, sb_url)
-    df = df[~df["ID"].isin(existing_ids)]
-
-    if df.empty:
-        if verbose:
-            print("All rows already exist in Smartabase. Nothing to upload.")
-        return 0
-
-    # -------------------------
-    # Upload
-    # -------------------------
-    url = f"{sb_url}/api/v1/eventimport?informat=json&format=json"
-
-    success_count = 0
-
-    for _, row in df.iterrows():
-        payload = _build_event_payload(row, form_name)
-
-        r = requests.post(
-            url,
-            headers=_sb_headers(sb_app_id),
-            auth=_sb_auth(sb_username, sb_password),
-            json=payload,
-            timeout=30
-        )
-
-        if r.status_code == 200:
-            success_count += 1
-            if verbose:
-                print(f"Uploaded Measurement: {row['First Name']} {row['Last Name']} (Session ID: {row['ID']})")
-        else:
-            print(f"FAILED ({row['ID']}): {r.status_code} - {r.text}")
-
-    if verbose:
-        print(f"Successfully uploaded {success_count} {form_name} events.")
-
-    return success_count
