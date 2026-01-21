@@ -22,7 +22,9 @@ Required Args for the data_upload function:
  Required Columns in DataFrame:
     "First Name" - First name of the user
     "Last Name" - Last name of the user
-    "ID" - Unique identifier for the measurement/event (this is different from the event-ID and allows for deduplication and merging)   
+    "ID" - Unique identifier for the measurement/event 
+         - this is different from the event-ID and allows for deduplication and merging
+         - this should be either pulled from the api or created in a unique and replicable way
 '''
 
 # =========================
