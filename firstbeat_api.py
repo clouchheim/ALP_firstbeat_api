@@ -5,7 +5,7 @@ from tqdm import tqdm
 import pandas as pd
 import requests
 from dotenv import load_dotenv
-from teamworks_api import upload_firstbeat_dataframe
+from teamworks_api import upload_dataframe
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
@@ -20,11 +20,19 @@ CONSUMER_ID = os.getenv("ID")
 SHARED_SECRET = os.getenv("SHARED_SECRET")
 API_KEY = os.getenv("API_KEY")
 
+SB_BASE_URL = os.getenv("SB_BASE_URL")
+SB_USERNAME = os.getenv("SB_USERNAME")
+SB_PASSWORD = os.getenv("SB_PASSWORD")
+SB_APP_ID   = os.getenv("SB_APP_ID", "firstbeat-sync")
+
 TEAM_ID = 20168 # all MALP and WALP on Firstbeat
-LAST_X_HOURS = 12 # looks back 6 hours but runs every hour, removes duplicates in R script
+LAST_X_HOURS = 36 # looks back 6 hours but runs every hour, removes duplicates in R script
 USSS_COACH_ID = '3-4925' # U.S. Ski and Snowboard id
 
 # IF missing correct infomration (probably in .env file, raise error)
+if not SB_USERNAME or not SB_PASSWORD:
+    raise RuntimeError("Missing SB_USERNAME or SB_PASSWORD in environment")
+
 if not CONSUMER_ID or not SHARED_SECRET or not API_KEY:
     raise RuntimeError("Missing ID, SHARED_SECRET, or API_KEY in .env")
 
@@ -184,7 +192,7 @@ else:
     df = pd.DataFrame(rmssd)
     #df.to_csv(csv_path, index=False)
     print("Uploading Firstbeat data to Smartabase... using the teamworks_api module.\n")
-    upload_firstbeat_dataframe(df)
+    upload_dataframe(df, "Firstbeat Summary Stats", SB_USERNAME, SB_PASSWORD, SB_BASE_URL, SB_APP_ID, verbose=True)
 
 #print(f"CSV written to {csv_path} with {len(rmssd)} rows")
 

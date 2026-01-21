@@ -1,47 +1,56 @@
 import os
 import requests
 import pandas as pd
-from dotenv import load_dotenv
 from requests.auth import HTTPBasicAuth
 
-# =========================
-# ENV / CONSTANTS
-# =========================
-load_dotenv()
-SB_BASE_URL = os.getenv("SB_BASE_URL")
-SB_USERNAME = os.getenv("SB_USERNAME")
-SB_PASSWORD = os.getenv("SB_PASSWORD")
-SB_APP_ID   = os.getenv("SB_APP_ID", "firstbeat-sync")
+'''
+Helper functions to upload dataframes into Smartabase via the API.
+This module assumes that the dataframe being uploadled has been cleaned, and has the correct + required columns/formatting 
+to match the target form in Smartabase.
+It also assumes that the username and password supplied to the CORRECT url have access to the target form.
+the data_upload fucntion is the main entry point, and acts as a wrapper to upload the dataframe.
 
-if not SB_USERNAME or not SB_PASSWORD:
-    raise RuntimeError("Missing SB_USERNAME or SB_PASSWORD in environment")
+Required Args for the data_upload function:
+    df: pd.DataFrame - DataFrame to upload
+    form_name: str - Name of the form in Smartabase to upload to
+    sb_username: str - Smartabase username
+    sb_password: str - Smartabase password
+    sb_url: str - Base URL of the Smartabase instance
+    sb_app_id: str - Application ID for Smartabase API access
+    verbose: bool - Whether to print progress messages
+
+ Required Columns in DataFrame:
+    "First Name" - First name of the user
+    "Last Name" - Last name of the user
+    "ID" - Unique identifier for the measurement/event (this is different from the event-ID and allows for deduplication and merging)   
+'''
 
 # =========================
 # AUTH / HEADERS
 # =========================
 
-def _sb_headers():
+def _sb_headers(sb_app_id):
     return {
-        "X-APP-ID": SB_APP_ID,
+        "X-APP-ID": sb_app_id,
         "Content-Type": "application/json",
         "Accept": "application/json"
     }
 
-def _sb_auth():
-    return HTTPBasicAuth(SB_USERNAME, SB_PASSWORD)
+def _sb_auth(sb_username, sb_password):
+    return HTTPBasicAuth(sb_username, sb_password)
 
 # =========================
 # USERS (CORRECT ENDPOINT)
 # =========================
 
-def get_usss_user_map():
+def get_usss_user_map(sb_username, sb_password, sb_url, sb_app_id):
     """
     Uses /usersynchronise to retrieve all accessible users.
 
     Returns:
         dict[(first_name, last_name)] -> user_id
     """
-    url = f"{SB_BASE_URL}/api/v1/usersynchronise?informat=json&format=json"
+    url = f"{sb_url}/api/v1/usersynchronise?informat=json&format=json"
 
     payload = {
         "lastSynchronisationTimeOnServer": 0,
@@ -53,8 +62,8 @@ def get_usss_user_map():
     while True:
         r = requests.post(
             url,
-            headers=_sb_headers(),
-            auth=_sb_auth(),
+            headers=_sb_headers(sb_app_id),
+            auth=_sb_auth(sb_username, sb_password),
             json=payload,
             timeout=60
         )
@@ -78,7 +87,7 @@ def get_usss_user_map():
 # EXISTING EVENTS (DEDUP)
 # =========================
 
-def get_existing_measurement_ids(user_ids, form_name):
+def get_existing_measurement_ids(user_ids, form_name, sb_username, sb_password, sb_app_id, sb_url):
     """
     Pulls existing form events
     and returns a set of measurement IDs already uploaded.
@@ -86,7 +95,7 @@ def get_existing_measurement_ids(user_ids, form_name):
     if not user_ids:
         return set()
 
-    url = f"{SB_BASE_URL}/api/v1/synchronise?informat=json&format=json"
+    url = f"{sb_url}/api/v1/synchronise?informat=json&format=json"
 
     payload = {
         "formName": form_name,
@@ -100,8 +109,8 @@ def get_existing_measurement_ids(user_ids, form_name):
     while True:
         r = requests.post(
             url,
-            headers=_sb_headers(),
-            auth=_sb_auth(),
+            headers=_sb_headers(sb_app_id),
+            auth=_sb_auth(sb_username, sb_password),
             json=payload,
             timeout=60
         )
@@ -152,7 +161,7 @@ def _build_event_payload(row, form_name):
 # PUBLIC ENTRY POINT
 # =========================
 
-def upload_dataframe(df: pd.DataFrame, form_name, verbose: bool = True) -> int:
+def upload_dataframe(df: pd.DataFrame, form_name, sb_username, sb_password, sb_url, sb_app_id, verbose: bool = True) -> int:
     """
     Uploads form name data into Smartabase.
     NOTE: DataFrame must contain the correct that match the form in 
@@ -172,7 +181,7 @@ def upload_dataframe(df: pd.DataFrame, form_name, verbose: bool = True) -> int:
     # -------------------------
     # Map users
     # -------------------------
-    user_map = get_usss_user_map()
+    user_map = get_usss_user_map(sb_username, sb_password, sb_url, sb_app_id)
 
     df = df.copy()
     df["user_id"] = df.apply(
@@ -190,7 +199,7 @@ def upload_dataframe(df: pd.DataFrame, form_name, verbose: bool = True) -> int:
     # -------------------------
     # Remove duplicates
     # -------------------------
-    existing_ids = get_existing_measurement_ids(df["user_id"].tolist(), form_name)
+    existing_ids = get_existing_measurement_ids(df["user_id"].tolist(), form_name, sb_username, sb_password, sb_app_id, sb_url)
     df = df[~df["ID"].isin(existing_ids)]
 
     if df.empty:
@@ -201,17 +210,17 @@ def upload_dataframe(df: pd.DataFrame, form_name, verbose: bool = True) -> int:
     # -------------------------
     # Upload
     # -------------------------
-    url = f"{SB_BASE_URL}/api/v1/eventimport?informat=json&format=json"
+    url = f"{sb_url}/api/v1/eventimport?informat=json&format=json"
 
     success_count = 0
 
     for _, row in df.iterrows():
-        payload = _build_event_payload(row)
+        payload = _build_event_payload(row, form_name)
 
         r = requests.post(
             url,
-            headers=_sb_headers(),
-            auth=_sb_auth(),
+            headers=_sb_headers(sb_app_id),
+            auth=_sb_auth(sb_username, sb_password),
             json=payload,
             timeout=30
         )
@@ -219,7 +228,7 @@ def upload_dataframe(df: pd.DataFrame, form_name, verbose: bool = True) -> int:
         if r.status_code == 200:
             success_count += 1
             if verbose:
-                print(f"Uploaded: {row['ID']}")
+                print(f"Uploaded Measurement: {row['First Name']} {row['Last Name']} (Session ID: {row['ID']})")
         else:
             print(f"FAILED ({row['ID']}): {r.status_code} - {r.text}")
 
