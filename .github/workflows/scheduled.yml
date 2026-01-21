@@ -1,85 +1,46 @@
-name: Firstbeat scheduled pipeline
+name: Firstbeat scheduled pipeline (Python)
 
 on:
   schedule:
-    - cron: "0 */1 * * *"
+    - cron: "0 * * * *"   # every hour at minute 0 (UTC)
   workflow_dispatch:
 
 jobs:
   firstbeat:
     runs-on: ubuntu-latest
     env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
       ID: ${{ secrets.ID }}
       SHARED_SECRET: ${{ secrets.SHARED_SECRET }}
       API_KEY: ${{ secrets.API_KEY }}
+      SB_BASE_URL: ${{ secrets.SB_BASE_URL }}     # only if you set it; otherwise your default is used
       SB_USERNAME: ${{ secrets.SB_USERNAME }}
       SB_PASSWORD: ${{ secrets.SB_PASSWORD }}
+      SB_APP_ID: ${{ secrets.SB_APP_ID }}         # optional; only if you set it
 
     steps:
-    # -------------------------
-    # Checkout repo
-    # -------------------------
-    - uses: actions/checkout@v3
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
-    # -------------------------
-    # Set up Python
-    # -------------------------
-    - uses: actions/setup-python@v4
-      with:
-        python-version: "3.11"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
 
-    - name: Install Python packages
-      run: |
-        python -m pip install --upgrade pip
-        pip install requests python-dotenv tqdm pyjwt pandas
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests python-dotenv tqdm pyjwt pandas
 
-    # -------------------------
-    # Set up R
-    # -------------------------
-    - uses: r-lib/actions/setup-r@v2
-      with:
-        use-public-rspm: true
+      - name: Debug env presence (no secret values)
+        run: |
+          echo "ID set: ${ID:+YES}"
+          echo "SHARED_SECRET set: ${SHARED_SECRET:+YES}"
+          echo "API_KEY set: ${API_KEY:+YES}"
+          echo "SB_USERNAME set: ${SB_USERNAME:+YES}"
+          echo "SB_PASSWORD set: ${SB_PASSWORD:+YES}"
+          echo "SB_BASE_URL set: ${SB_BASE_URL:+YES}"
+          echo "SB_APP_ID set: ${SB_APP_ID:+YES}"
 
-    # -------------------------
-    # Install system dependencies (needed for some R packages)
-    # -------------------------
-    - name: Install system dependencies
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y \
-          libcurl4-openssl-dev \
-          libssl-dev \
-          libxml2-dev
-
-    # -------------------------
-    # Install R packages (NO devtools)
-    # -------------------------
-    - name: Install R packages
-      run: |
-        Rscript -e '
-          install.packages(
-            c("dplyr", "readr", "remotes"),
-            repos = "https://cloud.r-project.org"
-          )
-          remotes::install_github("Teamworksapp/smartabaseR", ref = "main")
-        '
-
-    # -------------------------
-    # Debug environment variables
-    # -------------------------
-    - name: Debug environment variables
-      run: |
-        echo "ID is set: ${ID:+YES}"
-        echo "SHARED_SECRET is set: ${SHARED_SECRET:+YES}"
-        echo "API_KEY is set: ${API_KEY:+YES}"
-        echo "SB_USERNAME is set: ${SB_USERNAME:+YES}"
-        echo "SB_PASSWORD is set: ${SB_PASSWORD:+YES}"
-
-    # -------------------------
-    # Run Firstbeat pipeline
-    # -------------------------
-    - name: Run Firstbeat Pipeline
-      run: |
-        chmod +x run_firstbeat.sh
-        ./run_firstbeat.sh
+      - name: Run Firstbeat script
+        run: python firstbeat_api.py
