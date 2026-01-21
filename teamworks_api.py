@@ -26,6 +26,32 @@ Required Args for the data_upload function:
          - this should be either pulled from the api or created in a unique and replicable way
 '''
 # =========================
+# EVENT PAYLOAD - TODO: customize per form
+# =========================
+
+def _build_event_payload(row, form_name):
+    return {
+        "formName": form_name,
+        "startDate": row["start_date"],
+        "startTime": row["start_time"],
+        "finishDate": row["end_date"],
+        "finishTime": row["end_time"],
+        "userId": {"userId": int(row["user_id"])},
+        "rows": [
+            {
+                "row": 0,
+                "pairs": [
+                    {"key": "ID", "value": row["ID"]},
+                    {"key": "Session Type", "value": row["Session Type"]},
+                    {"key": "ACWR", "value": str(row["ACWR"])}, # yes i know that these look flipped
+                    {"key": "RMSSD", "value": str(row["RMSSD"])}
+                ]
+            }
+        ]
+    }
+
+
+# =========================
 # PUBLIC ENTRY POINT - MAIN MEHTHOD
 # =========================
 
@@ -213,28 +239,4 @@ def get_existing_measurement_ids(user_ids, form_name, sb_username, sb_password, 
 
     return existing_ids
 
-# =========================
-# EVENT PAYLOAD
-# =========================
-
-def _build_event_payload(row, form_name):
-    return {
-        "formName": form_name,
-        "startDate": row["start_date"],
-        "startTime": row["start_time"],
-        "finishDate": row["end_date"],
-        "finishTime": row["end_time"],
-        "userId": {"userId": int(row["user_id"])},
-        "rows": [
-            {
-                "row": 0,
-                "pairs": [
-                    {"key": "ID", "value": row["ID"]},
-                    {"key": "Session Type", "value": row["Session Type"]},
-                    {"key": "ACWR", "value": str(row["ACWR"])}, # yes i know that these look flipped
-                    {"key": "RMSSD", "value": str(row["RMSSD"])}
-                ]
-            }
-        ]
-    }
 
