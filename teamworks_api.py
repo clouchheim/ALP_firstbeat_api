@@ -43,7 +43,7 @@ def _build_event_payload(row, form_name):
                 "pairs": [
                     {"key": "ID", "value": row["ID"]},
                     {"key": "Session Type", "value": row["Session Type"]},
-                    {"key": "ACWR", "value": str(row["ACWR"])}, # yes i know that these look flipped
+                    {"key": "ACWR", "value": str(row["ACWR"])},
                     {"key": "RMSSD", "value": str(row["RMSSD"])}
                 ]
             }
