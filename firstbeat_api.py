@@ -176,25 +176,19 @@ for athlete in athlete_w_measurements:
             'Time': str(resp['endTime'].strftime("%I:%M %p").lstrip("0")),
             'ID':f'{measurement_id}-{athlete}' , 
             'Session Type': resp['measurementType'],
-            'RMSSD': rmssd_value, # yes i know that these look flipped
+            'RMSSD': rmssd_value,
             'ACWR': acwr_value
         }
         rmssd.append(session)
 
 df = pd.DataFrame(rmssd)
-#csv_path = os.path.join(os.getcwd(), "firstbeat_data.csv")
 
 if len(rmssd) == 0:
     print("WARNING: No measurement data found, no upload.")
-    # still create CSV so workflow doesn't fail at -f check
-    #pd.DataFrame([]).to_csv(csv_path, index=False)
 else:
     df = pd.DataFrame(rmssd)
-    #df.to_csv(csv_path, index=False)
     print("Uploading Firstbeat data to Smartabase... using the teamworks_api module.\n")
     upload_dataframe(df, "Firstbeat Summary Stats", SB_USERNAME, SB_PASSWORD, SB_BASE_URL, SB_APP_ID, verbose=True)
-
-#print(f"CSV written to {csv_path} with {len(rmssd)} rows")
 
 print("\n=== DONE WITH FIRSTBEAT API===\n")
 
