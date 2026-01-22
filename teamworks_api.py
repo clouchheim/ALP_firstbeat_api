@@ -30,6 +30,28 @@ Required Args for the data_upload function:
 # =========================
 
 def _build_event_payload(row, form_name):
+    ''' fucntion to build the event payload for a single row of data, this is an EXAMPLE and should be customized per form '''
+    pair_keys = [
+        "ID",
+        "Session Type",
+        "ACWR",
+        "RMSSD",
+        "HR Avg",
+        "HR Peak",
+        "TRIMP",
+        "Movement Load",
+        "Zone 1 (min)",
+        "Zone 2 (min)",
+        "Zone 3 (min)",
+        "Zone 4 (min)",
+        "Zone 5 (min)"
+    ]
+    
+    pairs = [
+        {"key": key, "value": str(row.get(key, ""))}
+        for key in pair_keys
+    ]
+    
     return {
         "formName": form_name,
         "startDate": row.get("start_date", pd.Timestamp.now().strftime("%d/%m/%Y")),
@@ -40,12 +62,7 @@ def _build_event_payload(row, form_name):
         "rows": [
             {
                 "row": 0,
-                "pairs": [
-                    {"key": "ID", "value": row["ID"]},
-                    {"key": "Session Type", "value": row["Session Type"]},
-                    {"key": "ACWR", "value": str(row["ACWR"])},
-                    {"key": "RMSSD", "value": str(row["RMSSD"])}
-                ]
+                "pairs": pairs
             }
         ]
     }

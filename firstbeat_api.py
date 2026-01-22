@@ -107,7 +107,7 @@ def get_measurement_results(athlete_id, measurement_id):
         f"{BASE_URL}/sports/accounts/{USSS_COACH_ID}/athletes/{athlete_id}/measurements/{measurement_id}/results",
         params={
             "format": "list",
-            "var": "rmssd,acwr,heartrRateAverage,heartRatePeak,heartRateAveragePercentage,zone1Time,zone2Time,zone3Time,zone4Time,zone5Time,trimp,quickRecoveryTestScore,movementLoad"
+            "var": "rmssd,acwr,heartRateAverage,heartRatePeak,heartRateAveragePercentage,zone1Time,zone2Time,zone3Time,zone4Time,zone5Time,trimp,quickRecoveryTestScore,movementLoad"
         }
     )
 
@@ -150,34 +150,51 @@ for athlete in athlete_w_measurements:
     print(f'--- Getting Measurements for {athlete_names[athlete]} ---')
     for measurement_id in measurements[athlete]:
         resp = get_measurement_results(athlete, measurement_id)
-        print(resp)
         resp['endTime'] = datetime.fromisoformat(resp['endTime'].replace("Z", ""))
         resp['startTime'] = datetime.fromisoformat(resp['startTime'].replace("Z", ""))
-        print(resp['endTime'])
+        duration = float(round((resp['endTime'] - resp['startTime']).total_seconds() / 60, 2))
 
         # get variables
-        try:
-            rmssd_value = resp['variables'][1]['value']
-        except (IndexError, KeyError):
-            rmssd_value = ""
-        try:
-            acwr_value = resp['variables'][0]['value']
-        except (IndexError, KeyError):
-            acwr_value = ""
-
+        variables = {
+            v.get("name"): v.get("value")
+            for v in resp.get("variables", [])
+        }
+        
+        rmssd_value = variables.get("rmssd", "")
+        acwr_value = variables.get("acwr", "")
+        hr_avg = variables.get("heartRateAverage", "")
+        hr_peak = variables.get("heartRatePeak", "")
+        trimp = variables.get("trimp", "")
+        movement_load = variables.get("movementLoad", "")
+        zone1 = variables.get("zone1Time", 0)
+        zone2 = variables.get("zone2Time", 0)
+        zone3 = variables.get("zone3Time", 0)
+        zone4 = variables.get("zone4Time", 0)
+        zone5 = variables.get("zone5Time", 0)
+        
         session = {
-            'start_date' : resp['startTime'].strftime("%d/%m/%Y"),
-            'start_time' : str(resp['startTime'].strftime("%I:%M %p").lstrip("0")),
-            'end_date' : resp['endTime'].strftime("%d/%m/%Y"),
-            'end_time' : str(resp['endTime'].strftime("%I:%M %p").lstrip("0")),
+            'start_date': resp['startTime'].strftime("%d/%m/%Y"),
+            'start_time': resp['startTime'].strftime("%I:%M %p").lstrip("0"),
+            'end_date': resp['endTime'].strftime("%d/%m/%Y"),
+            'end_time': resp['endTime'].strftime("%I:%M %p").lstrip("0"),
             'First Name': athlete_names[athlete].split()[0],
             'Last Name': athlete_names[athlete].split()[1],
             'Date': resp['endTime'].strftime("%d/%m/%Y"),
-            'Time': str(resp['endTime'].strftime("%I:%M %p").lstrip("0")),
-            'ID':f'{measurement_id}-{athlete}' , 
+            'Time': resp['endTime'].strftime("%I:%M %p").lstrip("0"),
+            'ID': f'{measurement_id}-{athlete}',
             'Session Type': resp['measurementType'],
+            'Duration (min)': duration,
             'RMSSD': rmssd_value,
-            'ACWR': acwr_value
+            'ACWR': acwr_value,
+            'HR Avg': hr_avg,
+            'HR Peak': hr_peak,
+            'TRIMP': trimp,
+            'Movement Load': movement_load,
+            'Zone 1 (min)': zone1,
+            'Zone 2 (min)': zone2,
+            'Zone 3 (min)': zone3,
+            'Zone 4 (min)': zone4,
+            'Zone 5 (min)': zone5
         }
         rmssd.append(session)
 
