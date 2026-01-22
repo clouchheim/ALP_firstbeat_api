@@ -107,7 +107,7 @@ def get_measurement_results(athlete_id, measurement_id):
         f"{BASE_URL}/sports/accounts/{USSS_COACH_ID}/athletes/{athlete_id}/measurements/{measurement_id}/results",
         params={
             "format": "list",
-            "var": "rmssd,acwr"
+            "var": "rmssd,acwr,heartrRateAverage,heartRatePeak,heartRateAveragePercentage,zone1Time,zone2Time,zone3Time,zone4Time,zone5Time,trimp,quickRecoveryTestScore,movementLoad"
         }
     )
 
@@ -150,10 +150,10 @@ for athlete in athlete_w_measurements:
     print(f'--- Getting Measurements for {athlete_names[athlete]} ---')
     for measurement_id in measurements[athlete]:
         resp = get_measurement_results(athlete, measurement_id)
+        print(resp)
         resp['endTime'] = datetime.fromisoformat(resp['endTime'].replace("Z", ""))
         resp['startTime'] = datetime.fromisoformat(resp['startTime'].replace("Z", ""))
         print(resp['endTime'])
-        #print(f"ID: {measurement_id}-{athlete}\nTime: {resp['endTime']}\nType: {resp['measurementType']} \nRMSSD: {resp['variables'][0]['value']}\nACWR: {resp['variables'][1]['value']}\n")
 
         # get variables
         try:
