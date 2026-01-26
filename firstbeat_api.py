@@ -208,5 +208,3 @@ else:
     upload_dataframe(df, "Firstbeat Summary Stats", SB_USERNAME, SB_PASSWORD, SB_BASE_URL, SB_APP_ID, verbose=True)
 
 print("\n=== DONE WITH FIRSTBEAT API===\n")
-
-

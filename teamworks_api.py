@@ -33,6 +33,7 @@ def _build_event_payload(row, form_name):
     ''' fucntion to build the event payload for a single row of data, this is an EXAMPLE and should be customized per form '''
     pair_keys = [
         "ID",
+        "Duration",
         "Session Type",
         "ACWR",
         "RMSSD",
@@ -255,5 +256,3 @@ def get_existing_measurement_ids(user_ids, form_name, sb_username, sb_password, 
         payload["cursor"] = cursor
 
     return existing_ids
-
-
