@@ -152,7 +152,6 @@ for athlete in athlete_w_measurements:
         resp = get_measurement_results(athlete, measurement_id)
         resp['endTime'] = datetime.fromisoformat(resp['endTime'].replace("Z", ""))
         resp['startTime'] = datetime.fromisoformat(resp['startTime'].replace("Z", ""))
-        duration = float(round((resp['endTime'] - resp['startTime']).total_seconds() / 60, 2))
 
         # get variables
         variables = {
@@ -183,7 +182,6 @@ for athlete in athlete_w_measurements:
             'Time': resp['endTime'].strftime("%I:%M %p").lstrip("0"),
             'ID': f'{measurement_id}-{athlete}',
             'Session Type': resp['measurementType'],
-            'Duration (min)': duration,
             'RMSSD': rmssd_value,
             'ACWR': acwr_value,
             'HR Avg': hr_avg,
