@@ -29,6 +29,70 @@ Required Args for the data_upload function:
 # EVENT PAYLOAD - TODO: customize per form
 # =========================
 
+import json, hashlib, time, os, random
+from datetime import datetime, timezone
+
+def _redact(d, keys=("authorization", "password", "token")):
+    if not isinstance(d, dict):
+        return d
+    out = {}
+    for k, v in d.items():
+        if any(x in k.lower() for x in keys):
+            out[k] = "***REDACTED***"
+        else:
+            out[k] = v
+    return out
+
+def _payload_summary(payload):
+    # Summarize “shape” without dumping everything
+    if payload is None:
+        return {"type": "None"}
+    if isinstance(payload, (str, bytes)):
+        return {"type": type(payload).__name__, "len": len(payload)}
+    if isinstance(payload, dict):
+        return {
+            "type": "dict",
+            "keys": sorted(list(payload.keys()))[:50],
+            "n_keys": len(payload),
+        }
+    if isinstance(payload, list):
+        return {
+            "type": "list",
+            "len": len(payload),
+            "elem_types": sorted({type(x).__name__ for x in payload})[:20],
+        }
+    return {"type": type(payload).__name__}
+
+def _stable_hash(obj) -> str:
+    try:
+        s = json.dumps(obj, sort_keys=True, default=str, ensure_ascii=True)
+    except Exception:
+        s = repr(obj)
+    return hashlib.sha256(s.encode("utf-8")).hexdigest()[:16]
+
+def log_request_response(tag, method, url, params=None, headers=None, payload=None, response=None, extra=None):
+    record = {
+        "ts": datetime.now(timezone.utc).isoformat(),
+        "tag": tag,
+        "method": method,
+        "url": url,
+        "params": params or {},
+        "headers": _redact(headers or {}),
+        "payload_summary": _payload_summary(payload),
+        "payload_hash": _stable_hash(payload),
+        "extra": extra or {},
+    }
+    if response is not None:
+        record.update({
+            "status_code": getattr(response, "status_code", None),
+            "response_headers": _redact(dict(getattr(response, "headers", {}) or {})),
+            "response_len": len(getattr(response, "text", "") or ""),
+            "response_preview": (getattr(response, "text", "") or "")[:800],
+        })
+
+    # GitHub Actions-friendly: single-line JSON log
+    print("SB_DIAG " + json.dumps(record, separators=(",", ":"), ensure_ascii=True))
+
 def _build_event_payload(row, form_name):
     ''' fucntion to build the event payload for a single row of data, this is an EXAMPLE and should be customized per form '''
     pair_keys = [
