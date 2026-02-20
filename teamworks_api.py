@@ -266,6 +266,9 @@ def get_usss_user_map(sb_username, sb_password, sb_url, sb_app_id):
         r.raise_for_status()
         data = r.json()
 
+        r = requests.post(url, params=params, headers=headers, json=payload)
+        r.raise_for_status()
+
         users = data.get("users", [])
         for u in users:
             key = (u["firstName"].strip(), u["lastName"].strip())
