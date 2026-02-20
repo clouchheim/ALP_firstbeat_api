@@ -256,7 +256,31 @@ def get_usss_user_map(sb_username, sb_password, sb_url, sb_app_id):
             json=payload,
             timeout=60
         )
+
+        log_request_response(
+            tag="synchronise_before",
+            method="POST",
+            url=url,
+            params=params,
+            headers=headers,
+            payload=payload,
+            extra={"user_ids_count": len(user_ids) if "user_ids" in locals() else None},
+        )
         
+        r = requests.post(url, params=params, headers=headers, json=payload)
+        
+        log_request_response(
+            tag="synchronise_after",
+            method="POST",
+            url=url,
+            params=params,
+            headers=headers,
+            payload=payload,
+            response=r,
+        )
+        
+        # Optional: retry on 500s (see below)
+        r.raise_for_status()
         if r.status_code >= 400:
             print("URL:", r.url)
             print("STATUS:", r.status_code)
@@ -266,8 +290,6 @@ def get_usss_user_map(sb_username, sb_password, sb_url, sb_app_id):
         r.raise_for_status()
         data = r.json()
 
-        r = requests.post(url, params=params, headers=headers, json=payload)
-        r.raise_for_status()
 
         users = data.get("users", [])
         for u in users:
