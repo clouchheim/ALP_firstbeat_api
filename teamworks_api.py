@@ -192,6 +192,13 @@ def get_usss_user_map(sb_username, sb_password, sb_url, sb_app_id):
             json=payload,
             timeout=60
         )
+        
+        if r.status_code >= 400:
+            print("URL:", r.url)
+            print("STATUS:", r.status_code)
+            print("RESPONSE:", r.text[:2000])
+            print("HEADERS:", dict(r.headers))
+        
         r.raise_for_status()
         data = r.json()
 
