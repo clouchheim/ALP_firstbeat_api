@@ -66,28 +66,79 @@ def last_x_hours_range(hours_back):
 # =========================
 # HELPER FOR API REQUESTS
 # =========================
+def _retry_after_seconds(response, fallback_seconds):
+    retry_after = response.headers.get("Retry-After")
+    if not retry_after:
+        return fallback_seconds
+    try:
+        return max(int(retry_after), 1)
+    except ValueError:
+        return fallback_seconds
+
+
 def test_endpoint(name, url, params=None, max_retries=5):
     print(f"\n--- {name} ---")
-    headers = auth_headers()
     #print("Authorization header (first 60):", headers["Authorization"][:60])
     #print("x-api-key (first 8):", headers["x-api-key"][:8])
 
-    for attempt in range(max_retries):
-        r = requests.get(url, headers=headers, params=params)
-        #print(f"Status: {r.status_code}")
-        if r.status_code == 202:
-            print("Analysis in progress, retrying in 5s...")
-            time.sleep(5)
+    last_exception = None
+    response = None
+
+    for attempt in range(1, max_retries + 1):
+        try:
+            response = requests.get(url, headers=auth_headers(), params=params, timeout=60)
+        except requests.RequestException as exc:
+            last_exception = exc
+            if attempt == max_retries:
+                raise
+            wait_seconds = min(2 ** attempt, 30)
+            print(f"Request error ({exc}). Retrying in {wait_seconds}s...")
+            time.sleep(wait_seconds)
             continue
-        break
-    
-    return r
+
+        if response.status_code == 202:
+            wait_seconds = 5
+            if attempt == max_retries:
+                return response
+            print(f"Analysis in progress, retrying in {wait_seconds}s...")
+            time.sleep(wait_seconds)
+            continue
+
+        if response.status_code == 429:
+            wait_seconds = _retry_after_seconds(response, fallback_seconds=min(2 ** attempt, 60))
+            if attempt == max_retries:
+                return response
+            print(f"Rate limited (429), retrying in {wait_seconds}s...")
+            time.sleep(wait_seconds)
+            continue
+
+        if response.status_code >= 500:
+            wait_seconds = min(2 ** attempt, 30)
+            if attempt == max_retries:
+                return response
+            print(f"Server error ({response.status_code}), retrying in {wait_seconds}s...")
+            time.sleep(wait_seconds)
+            continue
+
+        return response
+
+    if response is not None:
+        return response
+    raise last_exception
 
 def get_measurement_ids(athlete_id, from_time, to_time, name=''):
     measurement = test_endpoint( 
         f"Measurements (athlete {name} ({athlete_id}))", 
         f"{BASE_URL}/sports/accounts/{USSS_COACH_ID}/athletes/{athlete_id}/measurements/", 
-        params={"fromTime": from_time, "toTime": to_time})
+        params={"fromTime": from_time, "toTime": to_time},
+        max_retries=8
+    )
+
+    try:
+        measurement.raise_for_status()
+    except requests.RequestException as exc:
+        print(f"WARNING: Failed to fetch measurements for {name} ({athlete_id}): {exc}")
+        return []
 
     # Get ids of measurements to pull results
     measurement_ids = [
@@ -108,7 +159,8 @@ def get_measurement_results(athlete_id, measurement_id):
         params={
             "format": "list",
             "var": "rmssd,acwr,heartRateAverage,heartRatePeak,heartRateAveragePercentage,zone1Time,zone2Time,zone3Time,zone4Time,zone5Time,trimp,quickRecoveryTestScore,movementLoad"
-        }
+        },
+        max_retries=8
     )
 
     resp.raise_for_status()
@@ -149,7 +201,12 @@ athlete_w_measurements = list(measurements.keys())
 for athlete in athlete_w_measurements:
     print(f'--- Getting Measurements for {athlete_names[athlete]} ---')
     for measurement_id in measurements[athlete]:
-        resp = get_measurement_results(athlete, measurement_id)
+        try:
+            resp = get_measurement_results(athlete, measurement_id)
+        except requests.RequestException as exc:
+            print(f"WARNING: Skipping measurement {measurement_id}-{athlete} after retries: {exc}")
+            continue
+
         resp['endTime'] = datetime.fromisoformat(resp['endTime'].replace("Z", ""))
         resp['startTime'] = datetime.fromisoformat(resp['startTime'].replace("Z", ""))
 
