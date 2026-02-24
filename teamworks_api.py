@@ -293,7 +293,6 @@ def _fetch_existing_measurement_ids_for_user_batch(user_ids, form_name, sb_usern
         payload["cursor"] = cursor
 
     return existing_ids
-
 def get_existing_measurement_ids(user_ids, form_name, sb_username, sb_password, sb_app_id, sb_url):
     """
     Pulls existing form events
