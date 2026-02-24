@@ -1,6 +1,7 @@
 import requests
 import pandas as pd
 from requests.auth import HTTPBasicAuth
+import time
 
 '''
 Helper functions to upload dataframes into Smartabase via the API.
@@ -164,6 +165,46 @@ def _sb_headers(sb_app_id):
 def _sb_auth(sb_username, sb_password):
     return HTTPBasicAuth(sb_username, sb_password)
 
+
+def _chunk_list(values, chunk_size):
+    for i in range(0, len(values), chunk_size):
+        yield values[i:i + chunk_size]
+
+
+def _post_with_retries(url, headers, auth, payload, timeout=60, max_attempts=3):
+    """
+    Retries transient request failures (network/5xx) with exponential backoff.
+    """
+    last_error = None
+
+    for attempt in range(1, max_attempts + 1):
+        try:
+            response = requests.post(
+                url,
+                headers=headers,
+                auth=auth,
+                json=payload,
+                timeout=timeout
+            )
+            response.raise_for_status()
+            return response
+        except requests.HTTPError as exc:
+            status = exc.response.status_code if exc.response is not None else None
+            last_error = exc
+
+            # Non-server errors should fail fast (bad auth, bad request, etc).
+            if status is not None and status < 500:
+                raise
+
+            if attempt < max_attempts:
+                time.sleep(2 ** (attempt - 1))
+        except requests.RequestException as exc:
+            last_error = exc
+            if attempt < max_attempts:
+                time.sleep(2 ** (attempt - 1))
+
+    raise last_error
+
 # =========================
 # USERS (CORRECT ENDPOINT)
 # =========================
@@ -185,14 +226,14 @@ def get_usss_user_map(sb_username, sb_password, sb_url, sb_app_id):
     user_map = {}
 
     while True:
-        r = requests.post(
+        r = _post_with_retries(
             url,
             headers=_sb_headers(sb_app_id),
             auth=_sb_auth(sb_username, sb_password),
-            json=payload,
-            timeout=60
+            payload=payload,
+            timeout=60,
+            max_attempts=3
         )
-        r.raise_for_status()
         data = r.json()
 
         users = data.get("users", [])
@@ -212,34 +253,30 @@ def get_usss_user_map(sb_username, sb_password, sb_url, sb_app_id):
 # EXISTING EVENTS (DEDUP)
 # =========================
 
-def get_existing_measurement_ids(user_ids, form_name, sb_username, sb_password, sb_app_id, sb_url):
-    """
-    Pulls existing form events
-    and returns a set of measurement IDs already uploaded.
-    """
-    if not user_ids:
-        return set()
 
+def _fetch_existing_measurement_ids_for_user_batch(user_ids, form_name, sb_username, sb_password, sb_app_id, sb_url):
+    """
+    Syncs events for a subset of users and returns discovered event IDs.
+    """
     url = f"{sb_url}/api/v1/synchronise?informat=json&format=json"
-
     payload = {
         "formName": form_name,
         "lastSynchronisationTimeOnServer": 0,
-        "userIds": list(set(user_ids)),
+        "userIds": user_ids,
         "paginate": True
     }
 
     existing_ids = set()
 
     while True:
-        r = requests.post(
+        r = _post_with_retries(
             url,
             headers=_sb_headers(sb_app_id),
             auth=_sb_auth(sb_username, sb_password),
-            json=payload,
-            timeout=60
+            payload=payload,
+            timeout=60,
+            max_attempts=3
         )
-        r.raise_for_status()
         data = r.json()
 
         events = data.get("export", {}).get("events", [])
@@ -254,5 +291,66 @@ def get_existing_measurement_ids(user_ids, form_name, sb_username, sb_password, 
             break
 
         payload["cursor"] = cursor
+
+    return existing_ids
+
+def get_existing_measurement_ids(user_ids, form_name, sb_username, sb_password, sb_app_id, sb_url):
+    """
+    Pulls existing form events
+    and returns a set of measurement IDs already uploaded.
+    """
+    if not user_ids:
+        return set()
+
+    unique_user_ids = []
+    for user_id in user_ids:
+        if pd.notna(user_id):
+            unique_user_ids.append(int(user_id))
+    unique_user_ids = list(dict.fromkeys(unique_user_ids))
+
+    existing_ids = set()
+    user_batch_size = 25
+
+    for batch in _chunk_list(unique_user_ids, user_batch_size):
+        try:
+            existing_ids.update(
+                _fetch_existing_measurement_ids_for_user_batch(
+                    batch,
+                    form_name,
+                    sb_username,
+                    sb_password,
+                    sb_app_id,
+                    sb_url
+                )
+            )
+        except requests.HTTPError as exc:
+            status = exc.response.status_code if exc.response is not None else None
+
+            # Fallback for intermittent/size-related server failures.
+            if status is not None and status >= 500 and len(batch) > 1:
+                print(
+                    f"WARNING: Smartabase sync returned {status} for a user batch of "
+                    f"{len(batch)}. Retrying one user at a time."
+                )
+                for user_id in batch:
+                    try:
+                        existing_ids.update(
+                            _fetch_existing_measurement_ids_for_user_batch(
+                                [user_id],
+                                form_name,
+                                sb_username,
+                                sb_password,
+                                sb_app_id,
+                                sb_url
+                            )
+                        )
+                    except requests.RequestException as single_exc:
+                        print(f"WARNING: Could not dedupe existing events for user_id={user_id}: {single_exc}")
+                continue
+
+            raise
+        except requests.RequestException as exc:
+            # Keep the upload running even if dedup fetch fails unexpectedly.
+            print(f"WARNING: Could not fetch existing event IDs for a user batch: {exc}")
 
     return existing_ids
